@@ -10,6 +10,13 @@ public class Screen {
   public static final int height = 25;
 
   public static int cursorIndex = 0;
+  public static int indent = 0;
+
+  public static void print(String str, byte color) {
+    for (int i = 0; i < str.length(); i++) {
+      print(str.charAt(i), color);
+    }
+  }
 
   public static void print(String str) {
     for (int i = 0; i < str.length(); i++) {
@@ -18,10 +25,33 @@ public class Screen {
   }
 
   public static void print(char c) {
+    if (c == '\n') {
+      linefeed();
+      return;
+    }
+
     buffer.pixels[cursorIndex++].symbol = (byte)c;
   }
 
-  public static void print(char c, PixelColor color) {
+  public static void print(char c, byte color) {
+    if (c == '\n') {
+      linefeed();
+      return;
+    }
+
+    buffer.pixels[cursorIndex].color = color;
     buffer.pixels[cursorIndex++].symbol = (byte)c;
+  }
+
+  public static void linefeed() {
+    int currentLine = cursorIndex / width;
+    cursorIndex = (currentLine+1) * width + indent;
+  }
+  
+  public static void clearScreen() {
+    cursorIndex = 0;
+    for (int i = 0; i < size; i++)
+      print(' ', PixelColor.DEFAULT);
+    cursorIndex = 0;
   }
 }

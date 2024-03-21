@@ -3,47 +3,43 @@ package kernel;
 import kernel.screen.*;
 
 public class Kernel {
-  public static void main() {
-    Screen.buffer.pixels[0].symbol = (byte)'B';
-    // Screen.buffer.pixels[0].color = 0x07;
-    // Screen.buffer.pixels[0].color.setForeground(PixelColor.RED);
-    Screen.buffer.pixels[0].color.setForeground(PixelColor.RED);
-    Screen.buffer.pixels[0].color.value = 0x4;
+  private static String splashText = "\n  _____  _    _  ____   _____  \n |  __ \\| |  | |/ __ \\ / ____| \n | |  | | |  | | |  | | (___   \n | |  | | |  | | |  | |\\___ \\  \n | |__| | |__| | |__| |____) | \n |_____/ \\____/ \\____/|_____/  \n                               \n";
 
-    // clearScreen();
-    // vidOffset = 0;
-    // // print("Hello World");
-    // for (int i = 0; i < 256; i++) {
-    //   print("A", i);
-    // }
+  public static void main() {
+    Screen.clearScreen();
+    printSplash();
 
     while (true);
   }
 
-  // public static void print(String str, int color) {
-  //   int i;
-  //   for (i = 0; i < str.length(); i++)
-  //     print(str.charAt(i), color);
-  // }
+  private static void printSplash() {
+    byte splashColor = PixelColor.DEFAULT;
+    splashColor = PixelHelper.setForeground(splashColor, PixelColor.BLACK);
+    splashColor = PixelHelper.setLight(splashColor, false);
+    splashColor = PixelHelper.setBackground(splashColor, PixelColor.TURQUOISE);
 
-  // public static void print(String str) {
-  //   int i;
-  //   for (i = 0; i < str.length(); i++)
-  //     print(str.charAt(i));
-  // }
+    Screen.print("\n\n");
+    Screen.indent = 25;
+    Screen.print(splashText, splashColor);
+    Screen.indent = 0;
+    Screen.print(" David Ulrich Operating System");
+  }
 
-  // public static void print(char c) {
-  //   print(c, 0x07);
-  // }
+  private static void printInteger(int integer) {
+    // TODO: This is implemented a bit sloppy, but for now it suffices.
+    int digitRange = 1000000;
 
-  // public static void print(char c, int color) {
-  //   MAGIC.wMem8(vidMem + vidOffset++, (byte) c);
-  //   MAGIC.wMem8(vidMem + vidOffset++, (byte) color);
-  // }
+    // make digitRange smaller than (or equal) to integer
+    while (digitRange > integer) digitRange /= 10;
 
-  // public static void clearScreen() {
-  //   vidOffset = 0;
-  //   for (int i = 0; i < 2000; i++)
-  //     print(' ');
-  // }
+    while (digitRange != 0) {
+      int digit = integer / digitRange;
+      integer -= digitRange * digit;
+      char c = (char)(((byte)digit) + ((byte)'0'));
+
+      Screen.print(c);
+
+      digitRange /= 10;
+    }
+  }
 }
