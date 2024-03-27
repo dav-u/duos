@@ -54,4 +54,22 @@ public class Screen {
       print(' ', PixelColor.DEFAULT);
     cursorIndex = 0;
   }
+
+  public static void printInteger(int integer) {
+    // TODO: This is implemented a bit sloppy, but for now it suffices.
+    int digitRange = 1000000;
+
+    // make digitRange smaller than (or equal) to integer
+    while (digitRange > integer) digitRange /= 10;
+
+    while (digitRange != 0) {
+      int digit = integer / digitRange;
+      integer -= digitRange * digit;
+      char c = (char)(((byte)digit) + ((byte)'0'));
+
+      Screen.print(c);
+
+      digitRange /= 10;
+    }
+  }
 }

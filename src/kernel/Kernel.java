@@ -9,6 +9,40 @@ public class Kernel {
     Screen.clearScreen();
     printSplash();
 
+    Screen.clearScreen();
+
+    TestObject to1 = new TestObject();
+    to1.value = 1;
+    TestObject to2 = new TestObject();
+    to2.value = 2;
+    TestObject to3 = new TestObject();
+    to3.value = 3;
+    TestObject to4 = new TestObject();
+    to4.value = 4;
+
+    Screen.printInteger(to1.value);
+    Screen.print("\n");
+    Screen.printInteger(to2.value);
+    Screen.print("\n");
+    Screen.printInteger(to3.value);
+    Screen.print("\n");
+    Screen.printInteger(to4.value);
+    Screen.print("\n");
+
+    int to1Addr = MAGIC.cast2Ref(to1);
+    int to2Addr = MAGIC.cast2Ref(to2);
+    int to3Addr = MAGIC.cast2Ref(to3);
+    int to4Addr = MAGIC.cast2Ref(to4);
+
+    Screen.printInteger(to1Addr);
+    Screen.print("\n");
+    Screen.printInteger(to2Addr);
+    Screen.print("\n");
+    Screen.printInteger(to3Addr);
+    Screen.print("\n");
+    Screen.printInteger(to4Addr);
+    Screen.print("\n");
+
     while (true);
   }
 
@@ -23,23 +57,5 @@ public class Kernel {
     Screen.print(splashText, splashColor);
     Screen.indent = 0;
     Screen.print(" David Ulrich Operating System");
-  }
-
-  private static void printInteger(int integer) {
-    // TODO: This is implemented a bit sloppy, but for now it suffices.
-    int digitRange = 1000000;
-
-    // make digitRange smaller than (or equal) to integer
-    while (digitRange > integer) digitRange /= 10;
-
-    while (digitRange != 0) {
-      int digit = integer / digitRange;
-      integer -= digitRange * digit;
-      char c = (char)(((byte)digit) + ((byte)'0'));
-
-      Screen.print(c);
-
-      digitRange /= 10;
-    }
   }
 }
