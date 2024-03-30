@@ -1,10 +1,10 @@
 package kernel.screen;
 
 public class PixelHelper {
-  private final static int foregroundMask = 0x7;  //0b00000111;
-  private final static int backgroundMask = 0x70; //0b01110000;
-  private final static int lightMask = 0x8;       //0b00001000;
-  private final static int blinkMask = 0x80;      //0b10000000;
+  private final static byte foregroundMask = (byte)0x7;  //0b00000111;
+  private final static byte backgroundMask = (byte)0x70; //0b01110000;
+  private final static byte lightMask = (byte)0x8;       //0b00001000;
+  private final static byte blinkMask = (byte)0x80;      //0b10000000;
 
   public static byte setForeground(byte color, int foreground) {
     return (byte)((color & ~foregroundMask) | foreground);

@@ -13,6 +13,8 @@ class ScreenWriter {
   public void setColor(byte fg, byte bg) {
     color = PixelHelper.setForeground(color, fg);
     color = PixelHelper.setBackground(color, bg);
+    byte oldColor = color;
+    color = PixelColor.DEFAULT;
   }
 
   public void setCursor(int newX, int newY) {
@@ -62,7 +64,7 @@ class ScreenWriter {
     // four bit make one hex digit 
     byte mask = 0xF; // 0b1111
 
-    print(digits.charAt(b >>> 4));
+    print(digits.charAt((b >>> 4) & mask));
     print(digits.charAt(b & mask));
   }
 

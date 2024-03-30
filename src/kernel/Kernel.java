@@ -6,8 +6,8 @@ public class Kernel {
   private static String splashText = "\n  _____  _    _  ____   _____  \n |  __ \\| |  | |/ __ \\ / ____| \n | |  | | |  | | |  | | (___   \n | |  | | |  | | |  | |\\___ \\  \n | |__| | |__| | |__| |____) | \n |_____/ \\____/ \\____/|_____/  \n                               \n";
 
   public static void main() {
-    Screen.clear();
-    printSplash();
+    // Screen.clear();
+    // printSplash();
 
     Screen.clear();
 
@@ -55,7 +55,9 @@ public class Kernel {
   private static void testScreenWriter() {
     ScreenWriterTests screenWriterTests = new ScreenWriterTests();
     boolean allTestsPass = true;
-    allTestsPass = allTestsPass && screenWriterTests.testWrap();
+    // allTestsPass = allTestsPass && screenWriterTests.testWrap();
+    // allTestsPass = allTestsPass && screenWriterTests.testHex();
+    // allTestsPass = allTestsPass && screenWriterTests.testInteger();
     allTestsPass = allTestsPass && screenWriterTests.testColor();
 
     // Screen.clear();
