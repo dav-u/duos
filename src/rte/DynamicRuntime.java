@@ -1,7 +1,6 @@
 package rte;
 
 import kernel.screen.Screen;
-// import java.lang.MAGIC;
 
 public class DynamicRuntime {
   public static Object newInstance(int scalarSize, int relocEntries, SClassDesc type) {
@@ -12,30 +11,30 @@ public class DynamicRuntime {
     // walk the list to get to the last object
     Object lastObject = firstObject;
     while (lastObject._r_next != null) {
-        lastObject = lastObject._r_next;
+      lastObject = lastObject._r_next;
     }
 
     int lastObjectAddress = MAGIC.cast2Ref(lastObject);
 
     // 2 * 4 -> skip _r_relocEntries and _r_scalarSize
     // lastObject._r_scalarSize -> point to first byte after lastObject
-    int newObjectStartAddress = lastObjectAddress + 2 * 4 + lastObject._r_scalarSize; 
+    int newObjectStartAddress = lastObjectAddress + 2 * 4 + lastObject._r_scalarSize;
 
     // 2 * 4 -> skip _r_next and _r_type to point to _r_relocEntries
     int newObjectAddress = newObjectStartAddress + relocEntries * 4 + 2 * 4;
 
     // align the scalar size and thus the object to a multiple of 4 bytes
     int alignedScalarSize = scalarSize;
-    if (alignedScalarSize % 4 != 0) alignedScalarSize += alignedScalarSize % 4;
+    if (alignedScalarSize % 4 != 0)
+      alignedScalarSize += alignedScalarSize % 4;
 
     // points to first byte after newObject
     // 2 * 4 -> skip _r_relocEntries and _r_scalarSize
     int newObjectEndAddress = newObjectAddress + 2 * 4 + alignedScalarSize;
 
     // set everything for newObject to zero
-    for (int address = newObjectStartAddress;
-         address < newObjectEndAddress;
-         address += 4) MAGIC.wMem32(address, 0);
+    for (int address = newObjectStartAddress; address < newObjectEndAddress; address += 4)
+      MAGIC.wMem32(address, 0);
 
     Object newObject = MAGIC.cast2Obj(newObjectAddress);
     MAGIC.assign(newObject._r_relocEntries, relocEntries);
@@ -46,51 +45,152 @@ public class DynamicRuntime {
     MAGIC.assign(lastObject._r_next, newObject);
 
     return lastObject;
-
-    // test some assumptions
-    // int reloc = MAGIC.rMem32(lastObjectAddress);
-    // Screen.print("\nRelocEntries: ");
-    // Screen.printInteger(reloc);
-    // Screen.print("\n");
-    // Screen.printInteger(lastObject._r_relocEntries);
-    // Screen.print("\n\n");
-
-    // int scalar = MAGIC.rMem32(lastObjectAddress + 4);
-    // Screen.print("\nScalarSize: ");
-    // Screen.printInteger(scalar);
-    // Screen.print("\n");
-    // Screen.printInteger(lastObject._r_scalarSize);
-    // Screen.print("\n\n");
   }
-      
-  public static SArray newArray(int length, int arrDim, int entrySize,
-      int stdType, Object unitType) { while(true); }
-  public static void newMultArray(SArray[] parent, int curLevel,
-      int destLevel, int length, int arrDim, int entrySize, int stdType,
-      Object unitType) { while(true); }
-  public static boolean isInstance(Object o, SClassDesc dest,
-      boolean asCast) { while(true); }
-  public static SIntfMap isImplementation(Object o, SIntfDesc dest,
-      boolean asCast) { while(true); }
-  public static boolean isArray(SArray o, int stdType,
-      Object unitType, int arrDim, boolean asCast) { while(true); }
-  public static void checkArrayStore(Object dest,
-      SArray newEntry) { while(true); }
 
-  // private static void memset(int startAddress, int endAddress, byte value) {
-  //   int byteCount = endAddress - startAddress;
-  //   int longCount = byteCount / 8;
-  //   byteCount -= longCount * 8;
+  // this method was provided
+  public static SArray newArray(int length, int arrDim, int entrySize, int stdType,
+      SClassDesc unitType) { // unitType is not for sure of type SClassDesc
+    while (true);
+    // int scS, rlE;
+    // SArray me;
 
-  //   for (int i = 0; i < longCount; i++) MAGIC.wMem64(startAddress + i * 8, value);
-  //   for (int i = 0; i < byteCount; i++) MAGIC.wMem8(startAddress + longCount * 8 + i, value);
-  // }
+    // if (stdType == 0 && unitType._r_type != MAGIC.clssDesc("SClassDesc"))
+    //   MAGIC.inline(0xCC); // check type of unitType, we don't support interface arrays
+    // scS = MAGIC.getInstScalarSize("SArray");
+    // rlE = MAGIC.getInstRelocEntries("SArray");
+    // if (arrDim > 1 || entrySize < 0)
+    //   rlE += length;
+    // else
+    //   scS += length * entrySize;
+    // me = (SArray) newInstance(scS, rlE, MAGIC.clssDesc("SArray"));
+    // MAGIC.assign(me.length, length);
+    // MAGIC.assign(me._r_dim, arrDim);
+    // MAGIC.assign(me._r_stdType, stdType);
+    // MAGIC.assign(me._r_unitType, unitType);
+    // return me;
+  }
 
-  // private static void memset(int startAddress, int endAddress, byte value) {
-  //   // only works if startAddress is aligned
+  // this method was provided
+  public static void newMultArray(SArray[] parent, int curLevel, int destLevel,
+      int length, int arrDim, int entrySize, int stdType, SClassDesc clssType) {
+    while (true);
+    // int i;
 
-  //   int endAligned = endAddress & ~0x;
+    // if (curLevel + 1 < destLevel) { // step down one level
+    //   curLevel++;
+    //   for (i = 0; i < parent.length; i++) {
+    //     newMultArray((SArray[]) ((Object) parent[i]), curLevel, destLevel,
+    //         length, arrDim, entrySize, stdType, clssType);
+    //   }
+    // } else { // create the new entries
+    //   destLevel = arrDim - curLevel;
+    //   for (i = 0; i < parent.length; i++) {
+    //     parent[i] = newArray(length, destLevel, entrySize, stdType, clssType);
+    //   }
+    // }
+  }
 
-  //   for 
-  // }
+  // this method was provided
+  public static boolean isInstance(Object o, SClassDesc dest, boolean asCast) {
+    while(true);
+    // SClassDesc check;
+
+    // if (o == null) {
+    //   if (asCast)
+    //     return true; // null matches all
+    //   return false; // null is not an instance
+    // }
+    // check = o._r_type;
+    // while (check != null) {
+    //   if (check == dest)
+    //     return true;
+    //   check = check.parent;
+    // }
+    // if (asCast)
+    //   MAGIC.inline(0xCC);
+    // return false;
+  }
+
+  // this method was provided
+  public static SIntfMap isImplementation(Object o, SIntfDesc dest, boolean asCast) {
+    while(true);
+    // SIntfMap check;
+
+    // if (o == null)
+    //   return null;
+    // check = o._r_type.implementations;
+    // while (check != null) {
+    //   if (check.owner == dest)
+    //     return check;
+    //   check = check.next;
+    // }
+    // if (asCast)
+    //   MAGIC.inline(0xCC);
+    // return null;
+  }
+
+  // this method was provided
+  public static boolean isArray(SArray o, int stdType, SClassDesc clssType, int arrDim, boolean asCast) {
+    while(true);
+    // SClassDesc clss;
+
+    // // in fact o is of type "Object", _r_type has to be checked below - but this
+    // // check is faster than "instanceof" and conversion
+    // if (o == null) {
+    //   if (asCast)
+    //     return true; // null matches all
+    //   return false; // null is not an instance
+    // }
+    // if (o._r_type != MAGIC.clssDesc("SArray")) { // will never match independently of arrDim
+    //   if (asCast)
+    //     MAGIC.inline(0xCC);
+    //   return false;
+    // }
+    // if (clssType == MAGIC.clssDesc("SArray")) { // special test for arrays
+    //   if (o._r_unitType == MAGIC.clssDesc("SArray"))
+    //     arrDim--; // an array of SArrays, make next test to ">=" instead of ">"
+    //   if (o._r_dim > arrDim)
+    //     return true; // at least one level has to be left to have an object of type SArray
+    //   if (asCast)
+    //     MAGIC.inline(0xCC);
+    //   return false;
+    // }
+    // // no specials, check arrDim and check for standard type
+    // if (o._r_stdType != stdType || o._r_dim < arrDim) { // check standard types and array dimension
+    //   if (asCast)
+    //     MAGIC.inline(0xCC);
+    //   return false;
+    // }
+    // if (stdType != 0) {
+    //   if (o._r_dim == arrDim)
+    //     return true; // array of standard-type matching
+    //   if (asCast)
+    //     MAGIC.inline(0xCC);
+    //   return false;
+    // }
+    // // array of objects, make deep-check for class type (PicOS does not support
+    // // interface arrays)
+    // if (o._r_unitType._r_type != MAGIC.clssDesc("SClassDesc"))
+    //   MAGIC.inline(0xCC);
+    // clss = o._r_unitType;
+    // while (clss != null) {
+    //   if (clss == clssType)
+    //     return true;
+    //   clss = clss.parent;
+    // }
+    // if (asCast)
+    //   MAGIC.inline(0xCC);
+    // return false;
+  }
+
+  // this method was provided
+  public static void checkArrayStore(SArray dest, SArray newEntry) {
+    while(true);
+    // if (dest._r_dim > 1)
+    //   isArray(newEntry, dest._r_stdType, dest._r_unitType, dest._r_dim - 1, true);
+    // else if (dest._r_unitType == null)
+    //   MAGIC.inline(0xCC);
+    // else
+    //   isInstance(newEntry, dest._r_unitType, true);
+  }
 }

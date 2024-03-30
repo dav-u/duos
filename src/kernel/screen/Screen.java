@@ -41,6 +41,8 @@ public class Screen {
 
     buffer.pixels[cursorIndex].color = color;
     buffer.pixels[cursorIndex++].symbol = (byte)c;
+
+    cursorIndex %= size; // wrap around
   }
 
   public static void linefeed() {
@@ -48,7 +50,7 @@ public class Screen {
     cursorIndex = (currentLine+1) * width + indent;
   }
   
-  public static void clearScreen() {
+  public static void clear() {
     cursorIndex = 0;
     for (int i = 0; i < size; i++)
       print(' ', PixelColor.DEFAULT);
@@ -56,8 +58,8 @@ public class Screen {
   }
 
   public static void printInteger(int integer) {
-    // TODO: This is implemented a bit sloppy, but for now it suffices.
-    int digitRange = 1000000;
+    // max integer is 2,147,483,647
+    int digitRange = 1000000000;
 
     // make digitRange smaller than (or equal) to integer
     while (digitRange > integer) digitRange /= 10;

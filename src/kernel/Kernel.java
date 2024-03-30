@@ -6,10 +6,16 @@ public class Kernel {
   private static String splashText = "\n  _____  _    _  ____   _____  \n |  __ \\| |  | |/ __ \\ / ____| \n | |  | | |  | | |  | | (___   \n | |  | | |  | | |  | |\\___ \\  \n | |__| | |__| | |__| |____) | \n |_____/ \\____/ \\____/|_____/  \n                               \n";
 
   public static void main() {
-    Screen.clearScreen();
+    Screen.clear();
     printSplash();
 
-    Screen.clearScreen();
+    Screen.clear();
+
+    testScreenWriter();
+
+    while(true);
+
+    return;
 
     TestObject to1 = new TestObject();
     to1.value = 1;
@@ -44,6 +50,17 @@ public class Kernel {
     Screen.print("\n");
 
     while (true);
+  }
+
+  private static void testScreenWriter() {
+    ScreenWriterTests screenWriterTests = new ScreenWriterTests();
+    boolean allTestsPass = true;
+    allTestsPass = allTestsPass && screenWriterTests.testWrap();
+    allTestsPass = allTestsPass && screenWriterTests.testColor();
+
+    // Screen.clear();
+    // if (allTestsPass) Screen.print("All tests passed");
+    // else Screen.print("Something failed");
   }
 
   private static void printSplash() {
