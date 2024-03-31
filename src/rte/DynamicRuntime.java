@@ -8,29 +8,62 @@ public class DynamicRuntime {
     int firstObjectAddress = MAGIC.rMem32(MAGIC.imageBase + 16);
     Object firstObject = MAGIC.cast2Obj(firstObjectAddress);
 
+    Screen.printHex(scalarSize);
+    Screen.print('\n');
+
     // walk the list to get to the last object
     Object lastObject = firstObject;
     while (lastObject._r_next != null) {
       lastObject = lastObject._r_next;
     }
 
+    Screen.printHex(lastObject._r_scalarSize);
+    Screen.print('\n');
+
     int lastObjectAddress = MAGIC.cast2Ref(lastObject);
+
+    Screen.print("lastObjectAddress: ");
+    Screen.printHex(lastObjectAddress);
+    Screen.print('\n');
 
     // 2 * 4 -> skip _r_relocEntries and _r_scalarSize
     // lastObject._r_scalarSize -> point to first byte after lastObject
+    // TODO: does _r_scalarSize include the size for _r_scalarSize and _r_relocSize?
     int newObjectStartAddress = lastObjectAddress + 2 * 4 + lastObject._r_scalarSize;
 
+    Screen.print("newObjectStartAddress: ");
+    Screen.printHex(newObjectStartAddress);
+    Screen.print('\n');
+
+    // align start address
+    if (newObjectStartAddress % 4 != 0) newObjectStartAddress += newObjectStartAddress % 4;
+
+    Screen.print("newObjectStartAddress(aligned): ");
+    Screen.printHex(newObjectStartAddress);
+    Screen.print('\n');
+
+    Screen.print("diff: ");
+    Screen.printHex(newObjectStartAddress - lastObjectAddress);
+    Screen.print('\n');
+
     // 2 * 4 -> skip _r_next and _r_type to point to _r_relocEntries
+    // TODO: are there always at least 2 reloc entries?
     int newObjectAddress = newObjectStartAddress + relocEntries * 4 + 2 * 4;
 
-    // align the scalar size and thus the object to a multiple of 4 bytes
-    int alignedScalarSize = scalarSize;
-    if (alignedScalarSize % 4 != 0)
-      alignedScalarSize += alignedScalarSize % 4;
+    Screen.print("newObjectAddress: ");
+    Screen.printHex(newObjectAddress);
+    Screen.print('\n');
 
     // points to first byte after newObject
     // 2 * 4 -> skip _r_relocEntries and _r_scalarSize
-    int newObjectEndAddress = newObjectAddress + 2 * 4 + alignedScalarSize;
+    int newObjectEndAddress = newObjectAddress + 2 * 4 + scalarSize;
+
+    // align new object end address
+    if (newObjectEndAddress % 4 != 0) newObjectEndAddress += newObjectEndAddress % 4;
+
+    Screen.print("newObjectEndAddress: ");
+    Screen.printHex(newObjectEndAddress);
+    Screen.print('\n');
 
     // set everything for newObject to zero
     for (int address = newObjectStartAddress; address < newObjectEndAddress; address += 4)

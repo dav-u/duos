@@ -1,7 +1,7 @@
 package kernel.screen;
 
 /// This class provides basic output functionality
-class ScreenWriter {
+public class ScreenWriter {
   private byte color = PixelColor.DEFAULT;
 
   /// predefined methods
@@ -13,8 +13,6 @@ class ScreenWriter {
   public void setColor(byte fg, byte bg) {
     color = PixelHelper.setForeground(color, fg);
     color = PixelHelper.setBackground(color, bg);
-    byte oldColor = color;
-    color = PixelColor.DEFAULT;
   }
 
   public void setCursor(int newX, int newY) {

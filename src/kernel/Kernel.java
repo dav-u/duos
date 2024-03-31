@@ -11,43 +11,37 @@ public class Kernel {
 
     Screen.clear();
 
-    testScreenWriter();
+    //testScreenWriter();
 
-    while(true);
-
-    return;
+    ScreenWriter writer = new ScreenWriter();
 
     TestObject to1 = new TestObject();
     to1.value = 1;
     TestObject to2 = new TestObject();
     to2.value = 2;
-    TestObject to3 = new TestObject();
-    to3.value = 3;
-    TestObject to4 = new TestObject();
-    to4.value = 4;
+    // TestObject to3 = new TestObject();
+    // to3.value = 3;
+    // TestObject to4 = new TestObject();
+    // to4.value = 4;
 
-    Screen.printInteger(to1.value);
-    Screen.print("\n");
-    Screen.printInteger(to2.value);
-    Screen.print("\n");
-    Screen.printInteger(to3.value);
-    Screen.print("\n");
-    Screen.printInteger(to4.value);
-    Screen.print("\n");
+    // writer.println(to1.value);
+    // writer.println(to2.value);
+    // writer.println(to3.value);
+    // writer.println(to4.value);
 
     int to1Addr = MAGIC.cast2Ref(to1);
     int to2Addr = MAGIC.cast2Ref(to2);
-    int to3Addr = MAGIC.cast2Ref(to3);
-    int to4Addr = MAGIC.cast2Ref(to4);
+    // int to3Addr = MAGIC.cast2Ref(to3);
+    // int to4Addr = MAGIC.cast2Ref(to4);
 
-    Screen.printInteger(to1Addr);
-    Screen.print("\n");
-    Screen.printInteger(to2Addr);
-    Screen.print("\n");
-    Screen.printInteger(to3Addr);
-    Screen.print("\n");
-    Screen.printInteger(to4Addr);
-    Screen.print("\n");
+    // writer.printHex(to1Addr);
+    // Screen.print("\n");
+    // writer.printHex(to2Addr);
+    // Screen.print("\n");
+    // writer.printHex(to3Addr);
+    // Screen.print("\n");
+    // writer.printHex(to4Addr);
+    // Screen.print("\n");
 
     while (true);
   }
@@ -55,14 +49,13 @@ public class Kernel {
   private static void testScreenWriter() {
     ScreenWriterTests screenWriterTests = new ScreenWriterTests();
     boolean allTestsPass = true;
-    // allTestsPass = allTestsPass && screenWriterTests.testWrap();
-    // allTestsPass = allTestsPass && screenWriterTests.testHex();
-    // allTestsPass = allTestsPass && screenWriterTests.testInteger();
-    allTestsPass = allTestsPass && screenWriterTests.testColor();
+    allTestsPass = allTestsPass && screenWriterTests.testWrap();
+    allTestsPass = allTestsPass && screenWriterTests.testHex();
+    allTestsPass = allTestsPass && screenWriterTests.testInteger();
 
-    // Screen.clear();
-    // if (allTestsPass) Screen.print("All tests passed");
-    // else Screen.print("Something failed");
+    Screen.clear();
+    if (allTestsPass) Screen.print("All tests passed");
+    else Screen.print("Something failed");
   }
 
   private static void printSplash() {
