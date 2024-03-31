@@ -19,29 +19,35 @@ public class Kernel {
     to1.value = 1;
     TestObject to2 = new TestObject();
     to2.value = 2;
-    // TestObject to3 = new TestObject();
-    // to3.value = 3;
-    // TestObject to4 = new TestObject();
-    // to4.value = 4;
+    TestObject to3 = new TestObject();
+    to3.value = 3;
+    TestObject to4 = new TestObject();
+    to4.value = 4;
 
-    // writer.println(to1.value);
-    // writer.println(to2.value);
-    // writer.println(to3.value);
-    // writer.println(to4.value);
+    writer.println(to1.value);
+    writer.println(to2.value);
+    writer.println(to3.value);
+    writer.println(to4.value);
 
     int to1Addr = MAGIC.cast2Ref(to1);
     int to2Addr = MAGIC.cast2Ref(to2);
-    // int to3Addr = MAGIC.cast2Ref(to3);
-    // int to4Addr = MAGIC.cast2Ref(to4);
+    int to3Addr = MAGIC.cast2Ref(to3);
+    int to4Addr = MAGIC.cast2Ref(to4);
 
-    // writer.printHex(to1Addr);
-    // Screen.print("\n");
-    // writer.printHex(to2Addr);
-    // Screen.print("\n");
-    // writer.printHex(to3Addr);
-    // Screen.print("\n");
-    // writer.printHex(to4Addr);
-    // Screen.print("\n");
+    writer.printHex(to1Addr);
+    Screen.print("\n");
+    writer.printHex(to2Addr);
+    writer.print(" -> +");
+    writer.print(to2Addr - to1Addr);
+    Screen.print("\n");
+    writer.printHex(to3Addr);
+    writer.print(" -> +");
+    writer.print(to3Addr - to2Addr);
+    Screen.print("\n");
+    writer.printHex(to4Addr);
+    writer.print(" -> +");
+    writer.print(to4Addr - to3Addr);
+    Screen.print("\n");
 
     while (true);
   }
