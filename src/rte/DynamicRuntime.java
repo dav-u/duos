@@ -47,7 +47,7 @@ public class DynamicRuntime {
 
     MAGIC.assign(lastObject._r_next, newObject);
 
-    return lastObject;
+    return newObject;
   }
 
   // this method was provided
