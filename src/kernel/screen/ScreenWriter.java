@@ -19,7 +19,7 @@ public class ScreenWriter {
     if (newX >= Screen.width) return;
     if (newY >= Screen.height) return;
 
-    Screen.cursorIndex = newY * Screen.height + newX;
+    Screen.cursorIndex = newY * Screen.width + newX;
   }
 
   public void print(char c) {
