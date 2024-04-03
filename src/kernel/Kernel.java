@@ -1,17 +1,26 @@
 package kernel;
 
 import kernel.screen.*;
+import kernel.screen.tests.*;
+import rte.DynamicRuntime;
 
 public class Kernel {
   private static String splashText = "\n  _____  _    _  ____   _____  \n |  __ \\| |  | |/ __ \\ / ____| \n | |  | | |  | | |  | | (___   \n | |  | | |  | | |  | |\\___ \\  \n | |__| | |__| | |__| |____) | \n |_____/ \\____/ \\____/|_____/  \n                               \n";
 
   public static void main() {
-    // Screen.clear();
-    // printSplash();
+    DynamicRuntime.init();
+
+    Screen.clear();
+    printSplash();
 
     Screen.clear();
 
-    //testScreenWriter();
+    testScreenWriter();
+
+    while(true);
+
+    // delay(5);
+    // Screen.clear();
 
     ScreenWriter writer = new ScreenWriter();
 
@@ -56,8 +65,11 @@ public class Kernel {
     ScreenWriterTests screenWriterTests = new ScreenWriterTests();
     boolean allTestsPass = true;
     allTestsPass = allTestsPass && screenWriterTests.testWrap();
+    delay(3);
     allTestsPass = allTestsPass && screenWriterTests.testHex();
+    delay(3);
     allTestsPass = allTestsPass && screenWriterTests.testInteger();
+    delay(3);
 
     Screen.clear();
     if (allTestsPass) Screen.print("All tests passed");
@@ -75,5 +87,9 @@ public class Kernel {
     Screen.print(splashText, splashColor);
     Screen.indent = 0;
     Screen.print(" David Ulrich Operating System");
+  }
+
+  private static void delay(int factor) {
+    for (int i = 0; i < factor * 100000000; i++) { }
   }
 }

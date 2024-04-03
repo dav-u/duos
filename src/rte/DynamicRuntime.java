@@ -3,7 +3,10 @@ package rte;
 import kernel.screen.Screen;
 
 public class DynamicRuntime {
-  public static Object newInstance(int scalarSize, int relocEntries, SClassDesc type) {
+  static Object lastObject = null;
+  static Object firstDynamicObject = null;
+
+  public static void init() {
     // 16 bytes after imageBase is the address of the first object
     int firstObjectAddress = MAGIC.rMem32(MAGIC.imageBase + 16);
     Object firstObject = MAGIC.cast2Obj(firstObjectAddress);
@@ -14,26 +17,28 @@ public class DynamicRuntime {
       lastObject = lastObject._r_next;
     }
 
+    firstDynamicObject = new Object();
+
+    Screen.print("Got here");
+  }
+
+  public static Object newInstance(int scalarSize, int relocEntries, SClassDesc type) {
     int lastObjectAddress = MAGIC.cast2Ref(lastObject);
 
-    // 2 * 4 -> skip _r_relocEntries and _r_scalarSize
     // lastObject._r_scalarSize -> point to first byte after lastObject
-    // TODO: does _r_scalarSize include the size for _r_scalarSize and _r_relocSize?
-    int newObjectStartAddress = lastObjectAddress + 2 * 4 + lastObject._r_scalarSize;
+    int newObjectStartAddress = lastObjectAddress + lastObject._r_scalarSize;
 
     // align start address
-    if (newObjectStartAddress % 4 != 0) newObjectStartAddress += (4 - newObjectStartAddress % 4);
+    newObjectStartAddress = alignToMultipleOf4(newObjectStartAddress);
 
     // 2 * 4 -> skip _r_next and _r_type to point to _r_relocEntries
-    // TODO: are there always at least 2 reloc entries?
-    int newObjectAddress = newObjectStartAddress + relocEntries * 4 + 2 * 4;
+    int newObjectAddress = newObjectStartAddress + relocEntries * 4;
 
     // points to first byte after newObject
-    // 2 * 4 -> skip _r_relocEntries and _r_scalarSize
-    int newObjectEndAddress = newObjectAddress + 2 * 4 + scalarSize;
+    int newObjectEndAddress = newObjectAddress + scalarSize;
 
     // align new object end address
-    if (newObjectEndAddress % 4 != 0) newObjectEndAddress += (4 - newObjectEndAddress % 4);
+    newObjectEndAddress = alignToMultipleOf4(newObjectEndAddress);
 
     // set everything for newObject to zero
     for (int address = newObjectStartAddress; address < newObjectEndAddress; address += 4)
@@ -46,6 +51,8 @@ public class DynamicRuntime {
     MAGIC.assign(newObject._r_type, type);
 
     MAGIC.assign(lastObject._r_next, newObject);
+
+    lastObject = newObject;
 
     return newObject;
   }
@@ -195,5 +202,9 @@ public class DynamicRuntime {
     //   MAGIC.inline(0xCC);
     // else
     //   isInstance(newEntry, dest._r_unitType, true);
+  }
+
+  private static int alignToMultipleOf4(int i) {
+    return (i + 3) & ~3;
   }
 }

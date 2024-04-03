@@ -1,4 +1,7 @@
-package kernel.screen;
+package kernel.screen.tests;
+
+import kernel.screen.ScreenWriter;
+import kernel.screen.Screen;
 
 /// Provides methods that test the ScreenWriter
 public class ScreenWriterTests {
