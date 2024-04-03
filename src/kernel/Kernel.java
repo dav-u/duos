@@ -12,49 +12,8 @@ public class Kernel {
 
     Screen.clear();
     printSplash();
-
+    delay(2);
     Screen.clear();
-
-    testScreenWriter();
-
-    delay(5);
-    Screen.clear();
-
-    ScreenWriter writer = new ScreenWriter();
-
-    TestObject to1 = new TestObject();
-    to1.value = 1;
-    TestObject to2 = new TestObject();
-    to2.value = 2;
-    TestObject to3 = new TestObject();
-    to3.value = 3;
-    TestObject to4 = new TestObject();
-    to4.value = 4;
-
-    writer.println(to1.value);
-    writer.println(to2.value);
-    writer.println(to3.value);
-    writer.println(to4.value);
-
-    int to1Addr = MAGIC.cast2Ref(to1);
-    int to2Addr = MAGIC.cast2Ref(to2);
-    int to3Addr = MAGIC.cast2Ref(to3);
-    int to4Addr = MAGIC.cast2Ref(to4);
-
-    writer.printHex(to1Addr);
-    Screen.print("\n");
-    writer.printHex(to2Addr);
-    writer.print(" -> +");
-    writer.print(to2Addr - to1Addr);
-    Screen.print("\n");
-    writer.printHex(to3Addr);
-    writer.print(" -> +");
-    writer.print(to3Addr - to2Addr);
-    Screen.print("\n");
-    writer.printHex(to4Addr);
-    writer.print(" -> +");
-    writer.print(to4Addr - to3Addr);
-    Screen.print("\n");
 
     while (true);
   }
@@ -63,11 +22,8 @@ public class Kernel {
     ScreenWriterTests screenWriterTests = new ScreenWriterTests();
     boolean allTestsPass = true;
     allTestsPass = allTestsPass && screenWriterTests.testWrap();
-    delay(3);
     allTestsPass = allTestsPass && screenWriterTests.testHex();
-    delay(3);
     allTestsPass = allTestsPass && screenWriterTests.testInteger();
-    delay(3);
 
     Screen.clear();
     if (allTestsPass) Screen.print("All tests passed");
@@ -87,6 +43,7 @@ public class Kernel {
     Screen.print(" David Ulrich Operating System");
   }
 
+  // a hacky delay function. I do not have interrupts yet :(
   private static void delay(int factor) {
     for (int i = 0; i < factor * 100000000; i++) { }
   }
