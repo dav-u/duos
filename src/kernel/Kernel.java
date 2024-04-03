@@ -17,10 +17,8 @@ public class Kernel {
 
     testScreenWriter();
 
-    while(true);
-
-    // delay(5);
-    // Screen.clear();
+    delay(5);
+    Screen.clear();
 
     ScreenWriter writer = new ScreenWriter();
 

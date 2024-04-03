@@ -12,7 +12,7 @@ public class DynamicRuntime {
     Object firstObject = MAGIC.cast2Obj(firstObjectAddress);
 
     // walk the list to get to the last object
-    Object lastObject = firstObject;
+    lastObject = firstObject;
     while (lastObject._r_next != null) {
       lastObject = lastObject._r_next;
     }
