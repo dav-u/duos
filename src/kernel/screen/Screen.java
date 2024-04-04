@@ -31,6 +31,8 @@ public class Screen {
     }
 
     buffer.pixels[cursorIndex++].symbol = (byte)c;
+
+    cursorIndex %= size; // wrap around
   }
 
   public static void print(char c, byte color) {
@@ -47,7 +49,10 @@ public class Screen {
 
   public static void linefeed() {
     int currentLine = cursorIndex / width;
-    cursorIndex = (currentLine+1) * width + indent;
+    currentLine++;
+    currentLine %= height;
+
+    cursorIndex = currentLine * width + indent;
   }
   
   public static void clear() {
