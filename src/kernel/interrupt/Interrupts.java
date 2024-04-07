@@ -59,6 +59,7 @@ public class Interrupts {
 
   /// Load Interrupt-Descriptor-Table with base and limit from createInterruptTable
   public static void loadIdt() {
+    int tableStartAddress = MAGIC.addr(interruptTableMemory[0]);
     loadIdt(tableStartAddress, 255 * 8);
   }
 
