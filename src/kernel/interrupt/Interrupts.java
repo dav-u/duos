@@ -28,7 +28,7 @@ public class Interrupts {
     interruptDescriptorTable = (InterruptDescriptorTable)MAGIC.cast2Struct(tableStartAddress);
 
     fillInterruptTable();
-    loadIdt(tableStartAddress, 50 * 8); // 255 * 8
+    loadIdt(tableStartAddress, 255 * 8); // 255 * 8
   }
 
   public static void acknowledgePicMasterInterrupt() {
@@ -57,7 +57,12 @@ public class Interrupts {
     return interruptsEnabled;
   }
 
-  /// Load Interrupt-Descriptor-Table
+  /// Load Interrupt-Descriptor-Table with base and limit from createInterruptTable
+  public static void loadIdt() {
+    loadIdt(tableStartAddress, 255 * 8);
+  }
+
+  /// Load Interrupt-Descriptor-Table with specified base and limit
   public static void loadIdt(int baseAddress, int tableLimit) {
     long tmp=(((long)baseAddress)<<16)|(long)tableLimit;
     MAGIC.inline(0x0F, 0x01, 0x5D); MAGIC.inlineOffset(1, tmp); // lidt [ebp-0x08/tmp]
