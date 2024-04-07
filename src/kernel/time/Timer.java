@@ -1,7 +1,7 @@
 package kernel.time;
 
 public class Timer {
-  public final static long millisecondsPerTick = 100; // just a guess
+  public final static long millisecondsPerTick = 55;
 
   public static long time = 0;
   public static long delayUntil = 0;
