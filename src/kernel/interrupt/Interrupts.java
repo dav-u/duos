@@ -78,7 +78,7 @@ public class Interrupts {
   }
 
   public static void setInterruptHandler(int interrupt, SClassDesc handlersClassDescriptor, int methodOffset) {
-    interruptDescriptorTable.entries[interrupt].segmentSelector = (short)8; // CS segment from SJC; must be 8?
+    interruptDescriptorTable.entries[interrupt].segmentSelector = (short)(1 << 3); // CS segment from SJC;
 
     int code = MAGIC.rMem32(MAGIC.cast2Ref(handlersClassDescriptor) + methodOffset);
     code += MAGIC.getCodeOff();
