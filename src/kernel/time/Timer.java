@@ -1,7 +1,4 @@
-package kernel;
-
-import kernel.screen.PixelColor;
-import kernel.screen.Screen;
+package kernel.time;
 
 public class Timer {
   public final static long millisecondsPerTick = 100; // just a guess
@@ -17,11 +14,8 @@ public class Timer {
   /// Waits for the specified amounts of milliseconds before continuing execution.
   public static void delay(int ms) {
     delayUntil = time + ms / millisecondsPerTick;
-    Screen.print("Delaying");
-    //Screen.print(delayUntil, PixelColor.DEFAULT);
 
     // just spin until we delayed long enough
     while (time < delayUntil);
-    Screen.print("Delayed");
   }
 }

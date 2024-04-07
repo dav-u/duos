@@ -3,6 +3,7 @@ package kernel;
 import kernel.screen.*;
 import kernel.screen.tests.*;
 import kernel.interrupt.*;
+import kernel.time.Timer;
 import rte.DynamicRuntime;
 
 public class Kernel {
@@ -44,18 +45,6 @@ public class Kernel {
 
     BIOS.regs.EAX=0x0003;
     BIOS.rint(0x10);
-  }
-
-  private static void testScreenWriter() {
-    ScreenWriterTests screenWriterTests = new ScreenWriterTests();
-    boolean allTestsPass = true;
-    allTestsPass = allTestsPass && screenWriterTests.testWrap();
-    allTestsPass = allTestsPass && screenWriterTests.testHex();
-    allTestsPass = allTestsPass && screenWriterTests.testInteger();
-
-    Screen.clear();
-    if (allTestsPass) Screen.print("All tests passed");
-    else Screen.print("Something failed");
   }
 
   private static void printSplash() {

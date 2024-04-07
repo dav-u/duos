@@ -7,6 +7,18 @@ import kernel.screen.Screen;
 public class ScreenWriterTests {
   public ScreenWriter writer;
 
+  public static void testScreenWriter() {
+    ScreenWriterTests screenWriterTests = new ScreenWriterTests();
+    boolean allTestsPass = true;
+    allTestsPass = allTestsPass && screenWriterTests.testWrap();
+    allTestsPass = allTestsPass && screenWriterTests.testHex();
+    allTestsPass = allTestsPass && screenWriterTests.testInteger();
+
+    Screen.clear();
+    if (allTestsPass) Screen.print("All tests passed");
+    else Screen.print("Something failed");
+  }
+
   public ScreenWriterTests() {
     writer = new ScreenWriter();
   }
