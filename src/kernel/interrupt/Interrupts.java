@@ -93,8 +93,18 @@ public class Interrupts {
   }
 
   private static void fillInterruptTable() {
-    setInterruptHandler(0x0, MAGIC.clssDesc("Handlers"), MAGIC.mthdOff("Handlers", "DivideError"));
-    setInterruptHandler(0x03, MAGIC.clssDesc("Handlers"), MAGIC.mthdOff("Handlers", "Breakpoint"));
-    setInterruptHandler(0x20, MAGIC.clssDesc("Handlers"), MAGIC.mthdOff("Handlers", "Timer"));
+    SClassDesc handlersClassDesc = MAGIC.clssDesc("Handlers");
+    setInterruptHandler(0x00, handlersClassDesc, MAGIC.mthdOff("Handlers", "DivideError"));
+    setInterruptHandler(0x01, handlersClassDesc, MAGIC.mthdOff("Handlers", "DebugException"));
+    setInterruptHandler(0x02, handlersClassDesc, MAGIC.mthdOff("Handlers", "NonMaskableInterrupt"));
+    setInterruptHandler(0x03, handlersClassDesc, MAGIC.mthdOff("Handlers", "Breakpoint"));
+    setInterruptHandler(0x04, handlersClassDesc, MAGIC.mthdOff("Handlers", "Into"));
+    setInterruptHandler(0x05, handlersClassDesc, MAGIC.mthdOff("Handlers", "IndexOutOfRange"));
+    setInterruptHandler(0x06, handlersClassDesc, MAGIC.mthdOff("Handlers", "InvalidOpcode"));
+    setInterruptHandler(0x08, handlersClassDesc, MAGIC.mthdOff("Handlers", "DoubleFault"));
+    setInterruptHandler(0x0D, handlersClassDesc, MAGIC.mthdOff("Handlers", "GeneralProtectionError"));
+    setInterruptHandler(0x0E, handlersClassDesc, MAGIC.mthdOff("Handlers", "PageFault"));
+    setInterruptHandler(0x20, handlersClassDesc, MAGIC.mthdOff("Handlers", "Timer"));
+    setInterruptHandler(0x21, handlersClassDesc, MAGIC.mthdOff("Handlers", "Keyboard"));
   }
 }
