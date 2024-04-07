@@ -1,3 +1,5 @@
+import kernel.interrupt.Interrupts;
+
 public class BIOS {
   private final static int BIOS_MEMORY = 0x60000;
   private final static int BIOS_STKEND = BIOS_MEMORY+0x1000;
@@ -161,7 +163,10 @@ public class BIOS {
     MAGIC.wMem8(BIOS_MEMORY+61, (byte)inter); //set interrupt number
     MAGIC.inline(0x9C); //pushf
     MAGIC.inline(0xFA); //cli
-    //TODO lidtRM(); //load idt with real mode interrupt table
+
+    //load idt with real mode interrupt table
+    Interrupts.loadIdt(0, 1023);
+
     //call 16 bit code
     MAGIC.inline(0x56); //push e/rsi
     MAGIC.inline(0x57); //push e/rdi
@@ -181,7 +186,10 @@ public class BIOS {
     }
     MAGIC.inline(0x5F); //pop e/rdi
     MAGIC.inline(0x5E); //pop e/rsi
-    //TODO lidt(); //load idt with protected/long mode interrupt table
+
+    //load idt with protected/long mode interrupt table
+    Interrupts.loadIdt();
+
     MAGIC.inline(0x9D); //popf
   }
 }
