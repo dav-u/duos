@@ -28,63 +28,27 @@ public class ScreenWriter {
 
   public void print(int x) {
     // a bit lazy :D
-    print((long)x);
+    Screen.print(x, color);
   }
 
-  public void print(long x) {
-    // this is not a very efficient solution but it works
-
-    // max long is 9,223,372,036,854,775,807
-    long digitRange = 1000000000000000000L;
-
-    if (x < 0) {
-      print('-');
-      x = -x;
-    }
-
-    // make digitRange smaller than (or equal) to integer
-    while (digitRange > x) digitRange /= 10;
-
-    while (digitRange != 0) {
-      long digit = x / digitRange;
-      x -= digitRange * digit;
-      char c = (char)(((byte)digit) + ((byte)'0'));
-
-      print(c);
-
-      digitRange /= 10;
-    }
+  public void print(long l) {
+    Screen.print(l, color);
   }
 
   public void printHex(byte b) {
-    String digits = "0123456789ABCDEF";
-
-    // four bit make one hex digit 
-    byte mask = 0xF; // 0b1111
-
-    print(digits.charAt((b >>> 4) & mask));
-    print(digits.charAt(b & mask));
+    Screen.printHex(b, color);
   }
 
   public void printHex(short s) {
-    short mask = 0xFF; //0b1111_1111
-
-    printHex((byte)(s >>> 8));
-    printHex((byte)(s & mask));
+    Screen.printHex(s, color);
   }
 
   public void printHex(int x) {
-    int mask = 0xFFFF;
-
-    printHex((short)(x >>> 16));
-    printHex((short)(x & mask));
+    Screen.printHex(x, color);
   }
 
   public void printHex(long x) {
-    long mask = 0xFFFFFFFFL;
-
-    printHex((int)(x >>> 32));
-    printHex((int)(x & mask));
+    Screen.printHex(x, color);
   }
 
   public void print(String str) {

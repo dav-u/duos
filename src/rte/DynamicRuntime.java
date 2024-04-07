@@ -18,8 +18,6 @@ public class DynamicRuntime {
     }
 
     firstDynamicObject = new Object();
-
-    Screen.print("Got here");
   }
 
   public static Object newInstance(int scalarSize, int relocEntries, SClassDesc type) {
