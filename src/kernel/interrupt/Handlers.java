@@ -2,6 +2,7 @@ package kernel.interrupt;
 
 import kernel.ErrorCode;
 import kernel.Kernel;
+import kernel.io.Keyboard;
 import kernel.time.Timer;
 import kernel.screen.*;
 
@@ -112,6 +113,7 @@ public class Handlers {
   @SJC.Interrupt
   public static void Keyboard() {
     Screen.print("Keyboard");
+    Keyboard.readIoBuffer();
     Interrupts.acknowledgePicMasterInterrupt();
   }
 }

@@ -3,6 +3,9 @@ package kernel;
 import kernel.screen.*;
 import kernel.screen.tests.*;
 import kernel.interrupt.*;
+import kernel.io.Keyboard;
+import kernel.io.Key;
+import kernel.io.KeyboardCode;
 import kernel.time.Timer;
 import rte.DynamicRuntime;
 
@@ -13,10 +16,16 @@ public class Kernel {
     // setup runtime for object allocation
     DynamicRuntime.init();
 
-    // setup interrupts
     Interrupts.createInterruptTable();
+
+    // when I uncomment this, everything just freezes (like while(true);)
+    // Keyboard.init();
+
+    // enable hardware interrupts
     Interrupts.initPic();
     Interrupts.setInterruptFlag();
+
+    testGraphicMode();
 
     Screen.clear();
     printSplash();
@@ -37,11 +46,11 @@ public class Kernel {
     BIOS.regs.EAX=0x0013;
     BIOS.rint(0x10);
 
-    //for (int i = 0; i < 320*200; i++)
-    //  MAGIC.wMem8(0xA0000 + i, i%2 == 0 ? (byte)0xAA : (byte)0x33);
-    MAGIC.wMem8(0xA0000, (byte)0x0A);
+    for (int i = 0; i < 320*200; i++)
+      MAGIC.wMem8(0xA0000 + i, i%2 == 0 ? (byte)0xAA : (byte)0x33);
+    //MAGIC.wMem8(0xA0000, (byte)0x0A);
     
-    delay(5);
+    Timer.delay(2000);
 
     BIOS.regs.EAX=0x0003;
     BIOS.rint(0x10);
@@ -58,10 +67,5 @@ public class Kernel {
     Screen.print(splashText, splashColor);
     Screen.indent = 0;
     Screen.print(" David Ulrich Operating System");
-  }
-
-  // a hacky delay function. I do not have interrupts yet :(
-  private static void delay(int factor) {
-    for (int i = 0; i < factor * 100000000; i++) { }
   }
 }
