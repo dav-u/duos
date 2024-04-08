@@ -1,7 +1,5 @@
 package rte;
 
-import kernel.screen.Screen;
-
 public class DynamicRuntime {
   static Object lastObject = null;
   static Object firstDynamicObject = null;

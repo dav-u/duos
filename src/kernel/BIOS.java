@@ -192,4 +192,14 @@ public class BIOS {
 
     MAGIC.inline(0x9D); //popf
   }
+
+  public static void switchToGraphicsMode() {
+    BIOS.regs.EAX=0x0013;
+    BIOS.rint(0x10);
+  }
+
+  public static void switchToTextMode() {
+    BIOS.regs.EAX=0x0003;
+    BIOS.rint(0x10);
+  }
 }

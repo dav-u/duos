@@ -1,8 +1,8 @@
-package kernel.screen;
+package kernel.io.console;
 
 /// This class provides basic output functionality
-public class ScreenWriter {
-  private byte color = PixelColor.DEFAULT;
+public class ConsoleWriter {
+  private byte color = SymbolColor.DEFAULT;
 
   /// predefined methods
   public void println(char c) { print(c); println(); }
@@ -16,46 +16,46 @@ public class ScreenWriter {
   }
 
   public void setCursor(int newX, int newY) {
-    if (newX >= Screen.width) return;
-    if (newY >= Screen.height) return;
+    if (newX >= Console.width) return;
+    if (newY >= Console.height) return;
 
-    Screen.cursorIndex = newY * Screen.width + newX;
+    Console.cursorIndex = newY * Console.width + newX;
   }
 
   public void print(char c) {
-    Screen.print(c, color);
+    Console.print(c, color);
   }
 
   public void print(int x) {
     // a bit lazy :D
-    Screen.print(x, color);
+    Console.print(x, color);
   }
 
   public void print(long l) {
-    Screen.print(l, color);
+    Console.print(l, color);
   }
 
   public void printHex(byte b) {
-    Screen.printHex(b, color);
+    Console.printHex(b, color);
   }
 
   public void printHex(short s) {
-    Screen.printHex(s, color);
+    Console.printHex(s, color);
   }
 
   public void printHex(int x) {
-    Screen.printHex(x, color);
+    Console.printHex(x, color);
   }
 
   public void printHex(long x) {
-    Screen.printHex(x, color);
+    Console.printHex(x, color);
   }
 
   public void print(String str) {
-    Screen.print(str, color);
+    Console.print(str, color);
   }
 
   public void println() {
-    Screen.print('\n', color);
+    Console.print('\n', color);
   }
 }

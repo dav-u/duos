@@ -4,7 +4,7 @@ import kernel.ErrorCode;
 import kernel.Kernel;
 import kernel.io.Keyboard;
 import kernel.time.Timer;
-import kernel.screen.*;
+import kernel.io.console.*;
 
 /// Handlers for various interrupts.
 /// Extra info in comments is from https://wiki.osdev.org/Exceptions.
@@ -28,7 +28,7 @@ public class Handlers {
   /// Error code: The Debug exception does not set an error code. However, exception information is provided in the debug registers (CPU_Registers_x86#Debug_Registers). 
   @SJC.Interrupt
   public static void DebugException() {
-    Screen.print("DebugException");
+    Console.print("DebugException");
   }
 
   /// NMIs occur for RAM errors and unrecoverable hardware problems.
@@ -41,7 +41,7 @@ public class Handlers {
   /// The saved instruction pointer points to the byte after the INT3 instruction. 
   @SJC.Interrupt
   public static void Breakpoint() {
-    Screen.print("Breakpoint");
+    Console.print("Breakpoint");
   }
 
   /// Overflow exception
@@ -49,14 +49,14 @@ public class Handlers {
   /// The saved instruction pointer points to the instruction after the INTO instruction. 
   @SJC.Interrupt
   public static void Into() {
-    Screen.print("INTO (Overflow)");
+    Console.print("INTO (Overflow)");
   }
 
   /// This exception can occur when the BOUND instruction is executed. The BOUND instruction compares an array index with the lower and upper bounds of an array. When the index is out of bounds, the Bound Range Exceeded exception occurs.
   /// The saved instruction pointer points to the BOUND instruction which caused the exception. 
   @SJC.Interrupt
   public static void IndexOutOfRange() {
-    Screen.print("Index out of range");
+    Console.print("Index out of range");
   }
 
   /// The Invalid Opcode exception occurs when the processor tries to execute an invalid or undefined opcode, or an instruction with invalid prefixes. It also occurs in other cases, such as:
@@ -101,7 +101,7 @@ public class Handlers {
   /// The saved instruction pointer points to the instruction which caused the exception. 
   @SJC.Interrupt
   public static void PageFault() {
-    Screen.print("Index out of range");
+    Console.print("Index out of range");
   }
 
   @SJC.Interrupt
@@ -112,7 +112,7 @@ public class Handlers {
 
   @SJC.Interrupt
   public static void Keyboard() {
-    Screen.print("Keyboard");
+    Console.print("Keyboard");
     Keyboard.readIoBuffer();
     Interrupts.acknowledgePicMasterInterrupt();
   }

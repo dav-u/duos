@@ -1,7 +1,7 @@
 package kernel;
 
-import kernel.screen.*;
-import kernel.screen.tests.*;
+import kernel.io.console.*;
+import kernel.io.console.tests.*;
 import kernel.interrupt.*;
 import kernel.io.Keyboard;
 import kernel.io.Key;
@@ -27,24 +27,23 @@ public class Kernel {
 
     testGraphicMode();
 
-    Screen.clear();
+    Console.clear();
     printSplash();
     Timer.delay(2000);
-    Screen.clear();
+    Console.clear();
 
     while (true);
   }
 
   public static void panic(int errorCode) {
-    Screen.cursorIndex = 0;
-    Screen.print("KERNEL PANIC: ERROR 0x", PixelColor.RED);
-    Screen.printHex(errorCode, PixelColor.RED);
+    Console.cursorIndex = 0;
+    Console.print("KERNEL PANIC: ERROR 0x", SymbolColor.RED);
+    Console.printHex(errorCode, SymbolColor.RED);
     while(true);
   }
 
   private static void testGraphicMode() {
-    BIOS.regs.EAX=0x0013;
-    BIOS.rint(0x10);
+    BIOS.switchToGraphicsMode();
 
     for (int i = 0; i < 320*200; i++)
       MAGIC.wMem8(0xA0000 + i, i%2 == 0 ? (byte)0xAA : (byte)0x33);
@@ -52,20 +51,19 @@ public class Kernel {
     
     Timer.delay(2000);
 
-    BIOS.regs.EAX=0x0003;
-    BIOS.rint(0x10);
+    BIOS.switchToTextMode();
   }
 
   private static void printSplash() {
-    byte splashColor = PixelColor.DEFAULT;
-    splashColor = PixelHelper.setForeground(splashColor, PixelColor.BLACK);
+    byte splashColor = SymbolColor.DEFAULT;
+    splashColor = PixelHelper.setForeground(splashColor, SymbolColor.BLACK);
     splashColor = PixelHelper.setLight(splashColor, false);
-    splashColor = PixelHelper.setBackground(splashColor, PixelColor.TURQUOISE);
+    splashColor = PixelHelper.setBackground(splashColor, SymbolColor.TURQUOISE);
 
-    Screen.print("\n\n");
-    Screen.indent = 25;
-    Screen.print(splashText, splashColor);
-    Screen.indent = 0;
-    Screen.print(" David Ulrich Operating System");
+    Console.print("\n\n");
+    Console.indent = 25;
+    Console.print(splashText, splashColor);
+    Console.indent = 0;
+    Console.print(" David Ulrich Operating System");
   }
 }

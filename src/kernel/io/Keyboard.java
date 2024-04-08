@@ -1,7 +1,7 @@
 package kernel.io;
 
-import kernel.screen.PixelColor;
-import kernel.screen.Screen;
+import kernel.io.console.SymbolColor;
+import kernel.io.console.Console;
 
 public class Keyboard {
   public static void init() {
@@ -10,8 +10,8 @@ public class Keyboard {
 
   public static void readIoBuffer() {
     byte code = MAGIC.rIOs8(0x60);
-    Screen.printHex(code, PixelColor.DEFAULT);
-    Screen.print('\n');
+    Console.printHex(code, SymbolColor.DEFAULT);
+    Console.print('\n');
   }
 
   private static boolean isMakeCode(byte code) {

@@ -1,6 +1,6 @@
-package kernel.screen;
+package kernel.io.console;
 
-public class PixelColor {
+public class SymbolColor {
   public static final byte BLACK = 0;
   public static final byte BLUE = 1;
   public static final byte GREEN = 2;

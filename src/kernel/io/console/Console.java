@@ -1,8 +1,8 @@
-package kernel.screen;
+package kernel.io.console;
 
-public class Screen {
+public class Console {
   private static final int screenMemoryAddress = 0xB8000;
-  public static ScreenBuffer buffer = (ScreenBuffer)MAGIC.cast2Struct(screenMemoryAddress);
+  public static ConsoleBuffer buffer = (ConsoleBuffer)MAGIC.cast2Struct(screenMemoryAddress);
 
   public static final int size = 2000;
   public static final int width = 80;
@@ -57,7 +57,7 @@ public class Screen {
   public static void clear() {
     cursorIndex = 0;
     for (int i = 0; i < size; i++)
-      print(' ', PixelColor.DEFAULT);
+      print(' ', SymbolColor.DEFAULT);
     cursorIndex = 0;
   }
 

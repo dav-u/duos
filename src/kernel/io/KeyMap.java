@@ -1,7 +1,5 @@
 package kernel.io;
 
-import kernel.screen.Screen;
-
 /// Maps key codes to Key classes
 public class KeyMap {
   private static Key[] map;

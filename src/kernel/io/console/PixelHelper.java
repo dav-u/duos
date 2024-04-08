@@ -1,4 +1,4 @@
-package kernel.screen;
+package kernel.io.console;
 
 public class PixelHelper {
   private final static byte foregroundMask = (byte)0x7;  //0b00000111;

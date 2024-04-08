@@ -1,30 +1,30 @@
-package kernel.screen.tests;
+package kernel.io.console.tests;
 
-import kernel.screen.ScreenWriter;
-import kernel.screen.Screen;
+import kernel.io.console.ConsoleWriter;
+import kernel.io.console.Console;
 
-/// Provides methods that test the ScreenWriter
-public class ScreenWriterTests {
-  public ScreenWriter writer;
+/// Provides methods that test the ConsoleWriter
+public class ConsoleWriterTests {
+  public ConsoleWriter writer;
 
-  public static void testScreenWriter() {
-    ScreenWriterTests screenWriterTests = new ScreenWriterTests();
+  public static void testConsoleWriter() {
+    ConsoleWriterTests screenWriterTests = new ConsoleWriterTests();
     boolean allTestsPass = true;
     allTestsPass = allTestsPass && screenWriterTests.testWrap();
     allTestsPass = allTestsPass && screenWriterTests.testHex();
     allTestsPass = allTestsPass && screenWriterTests.testInteger();
 
-    Screen.clear();
-    if (allTestsPass) Screen.print("All tests passed");
-    else Screen.print("Something failed");
+    Console.clear();
+    if (allTestsPass) Console.print("All tests passed");
+    else Console.print("Something failed");
   }
 
-  public ScreenWriterTests() {
-    writer = new ScreenWriter();
+  public ConsoleWriterTests() {
+    writer = new ConsoleWriter();
   }
 
   public boolean testWrap() {
-    Screen.clear();
+    Console.clear();
     for (int i = 0; i < 1900; i++) {
       writer.print('A');
     }
@@ -33,18 +33,18 @@ public class ScreenWriterTests {
       writer.print('B');
     }
 
-    return Screen.buffer.pixels[0].symbol == 'B';
+    return Console.buffer.pixels[0].symbol == 'B';
   }
 
   public boolean testInteger() {
-    Screen.clear();
+    Console.clear();
     writer.print(1234567);
 
     return checkScreenTextAt(0, "1234567");
   }
 
   public boolean testHex() {
-    Screen.clear();
+    Console.clear();
     writer.printHex((byte)0xEA);
     writer.println();
     writer.printHex((short)0xDEAD);
@@ -54,15 +54,15 @@ public class ScreenWriterTests {
     writer.printHex((long)0x123456789098765L);
 
     return 
-      checkScreenTextAt(Screen.width * 0, "EA")
-      && checkScreenTextAt(Screen.width * 1, "DEAD")
-      && checkScreenTextAt(Screen.width * 2, "1C0FFEE1")
-      && checkScreenTextAt(Screen.width * 3, "0123456789098765");
+      checkScreenTextAt(Console.width * 0, "EA")
+      && checkScreenTextAt(Console.width * 1, "DEAD")
+      && checkScreenTextAt(Console.width * 2, "1C0FFEE1")
+      && checkScreenTextAt(Console.width * 3, "0123456789098765");
   }
 
   private boolean checkScreenTextAt(int cursorIndex, String expectedString) {
     for (int i = 0; i < expectedString.length(); i++) {
-      if (Screen.buffer.pixels[cursorIndex + i].symbol != expectedString.charAt(i))
+      if (Console.buffer.pixels[cursorIndex + i].symbol != expectedString.charAt(i))
         return false;
     }
 
