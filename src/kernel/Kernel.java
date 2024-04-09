@@ -18,18 +18,17 @@ public class Kernel {
 
     Interrupts.createInterruptTable();
 
-    // when I uncomment this, everything just freezes (like while(true);)
-    // Keyboard.init();
+    Keyboard.init();
 
     // enable hardware interrupts
     Interrupts.initPic();
     Interrupts.setInterruptFlag();
 
-    testGraphicMode();
+    // testGraphicMode();
 
     Console.clear();
     printSplash();
-    Timer.delay(2000);
+    Timer.delay(500);
     Console.clear();
 
     while (true);

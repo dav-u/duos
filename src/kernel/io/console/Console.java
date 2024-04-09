@@ -28,6 +28,11 @@ public class Console {
       linefeed();
       return;
     }
+    if (c == '\b') {
+      backspace();
+      return;
+    }
+
 
     buffer.pixels[cursorIndex++].symbol = (byte)c;
 
@@ -39,11 +44,23 @@ public class Console {
       linefeed();
       return;
     }
+    if (c == '\b') {
+      backspace();
+      return;
+    }
 
     buffer.pixels[cursorIndex].color = color;
     buffer.pixels[cursorIndex++].symbol = (byte)c;
 
     cursorIndex %= size; // wrap around
+  }
+
+  public static void backspace() {
+    if (cursorIndex == 0) return;
+
+    cursorIndex--;
+    print(' ');
+    cursorIndex--;
   }
 
   public static void linefeed() {

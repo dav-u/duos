@@ -186,7 +186,6 @@ public class DynamicRuntime {
 
   // this method was provided
   public static void checkArrayStore(SArray dest, SArray newEntry) {
-    while(true);
     if (dest._r_dim > 1)
       isArray(newEntry, dest._r_stdType, dest._r_unitType, dest._r_dim - 1, true);
     else if (dest._r_unitType == null)

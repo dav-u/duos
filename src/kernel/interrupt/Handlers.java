@@ -112,7 +112,6 @@ public class Handlers {
 
   @SJC.Interrupt
   public static void Keyboard() {
-    Console.print("Keyboard");
     Keyboard.readIoBuffer();
     Interrupts.acknowledgePicMasterInterrupt();
   }
