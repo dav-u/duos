@@ -17,6 +17,9 @@ public class Keyboard {
   public static void readIoBuffer() {
     byte code = MAGIC.rIOs8(0x60);
 
+    // ignore diverse
+    if (code == 0xE2) return;
+
     // TODO: check for E0 or E1
     if (code == 0xE0 || code == 0xE1) return;
 

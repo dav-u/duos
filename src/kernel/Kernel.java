@@ -4,8 +4,10 @@ import kernel.io.console.*;
 import kernel.io.console.tests.*;
 import kernel.interrupt.*;
 import kernel.io.Keyboard;
+import kernel.io.Graphics;
 import kernel.io.Key;
 import kernel.io.KeyboardCode;
+import kernel.io.ScreenSaver;
 import kernel.time.Timer;
 import rte.DynamicRuntime;
 
@@ -25,6 +27,9 @@ public class Kernel {
     Interrupts.setInterruptFlag();
 
     // testGraphicMode();
+
+    // BIOS.switchToGraphicsMode();
+    // Graphics.drawRect(0, 0, 20, 20, (byte)0x20);
 
     Console.clear();
     printSplash();
