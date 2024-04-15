@@ -3,10 +3,8 @@ package kernel;
 import kernel.io.console.*;
 import kernel.io.console.tests.*;
 import kernel.interrupt.*;
-import kernel.io.Keyboard;
+import kernel.io.keyboard.*;
 import kernel.io.Graphics;
-import kernel.io.Key;
-import kernel.io.KeyboardCode;
 import kernel.io.ScreenSaver;
 import kernel.time.Timer;
 import rte.DynamicRuntime;
@@ -36,7 +34,18 @@ public class Kernel {
     Timer.delay(500);
     Console.clear();
 
-    while (true);
+    KeyBufferReader keyBufferReader = new KeyBufferReader(Keyboard.keyBuffer);
+    KeyboardTextInterpreter keyboardTextInterpreter = new KeyboardTextInterpreter(keyBufferReader);
+
+    KeyBufferReader keyBufferReader2 = new KeyBufferReader(Keyboard.keyBuffer);
+    KeyboardShortcutInterpreter keyboardShortcutInterpreter = new KeyboardShortcutInterpreter(keyBufferReader2);
+
+    keyboardShortcutInterpreter.addShortcut(new BreakpointShortcut());
+
+    while (true) {
+      keyboardTextInterpreter.execute();
+      keyboardShortcutInterpreter.execute();
+    }
   }
 
   public static void panic(int errorCode) {
@@ -44,18 +53,6 @@ public class Kernel {
     Console.print("KERNEL PANIC: ERROR 0x", SymbolColor.RED);
     Console.printHex(errorCode, SymbolColor.RED);
     while(true);
-  }
-
-  private static void testGraphicMode() {
-    BIOS.switchToGraphicsMode();
-
-    for (int i = 0; i < 320*200; i++)
-      MAGIC.wMem8(0xA0000 + i, i%2 == 0 ? (byte)0xAA : (byte)0x33);
-    //MAGIC.wMem8(0xA0000, (byte)0x0A);
-    
-    Timer.delay(2000);
-
-    BIOS.switchToTextMode();
   }
 
   private static void printSplash() {

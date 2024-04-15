@@ -1,4 +1,4 @@
-package kernel.io;
+package kernel.io.keyboard;
 
 public class Key {
   public int code;

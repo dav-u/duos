@@ -2,7 +2,7 @@ package kernel.interrupt;
 
 import kernel.ErrorCode;
 import kernel.Kernel;
-import kernel.io.Keyboard;
+import kernel.io.keyboard.Keyboard;
 import kernel.time.Timer;
 import kernel.io.console.*;
 
@@ -42,6 +42,7 @@ public class Handlers {
   @SJC.Interrupt
   public static void Breakpoint() {
     Console.print("Breakpoint");
+    while(true);
   }
 
   /// Overflow exception
