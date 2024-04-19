@@ -1,10 +1,18 @@
+package kernel.bios;
+
 import kernel.interrupt.Interrupts;
 
 public class BIOS {
   private final static int BIOS_MEMORY = 0x60000;
   private final static int BIOS_STKEND = BIOS_MEMORY+0x1000;
   private final static int BIOS_STKBSE = BIOS_STKEND-0x28;
-  
+
+  // Put system memory map buffer before bios memory.
+  // Needs to be below 1MB.
+  public final static int BIOS_MEMMAP_START = BIOS_MEMORY - 32;
+
+  public final static int CF_MASK = 0x0001;
+
   public static class BIOSRegs extends STRUCT {
     public short DS, ES, FS, FLAGS;
     public int EDI, ESI, EBP, ESP, EBX, EDX, ECX, EAX;

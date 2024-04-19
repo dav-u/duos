@@ -45,6 +45,7 @@ public class KeyBuffer {
   /// DO NOT MODIFY the returned event.
   /// (I would like to return by value (like struct in c++) but I do not know if this is possible with SJC)
   public KeyEvent getEvent(long timestampToGet) {
+    // gefährlich
     if (timestampToGet > currentTimestamp) return null; // no more events
 
     int offset = (int)(currentTimestamp - timestampToGet);

@@ -115,8 +115,13 @@ public class Console {
     // max long is 9,223,372,036,854,775,807
     long digitRange = 1000000000000000000L;
 
+    if (x == 0) {
+      print('0', color);
+      return;
+    }
+
     if (x < 0) {
-      print('-');
+      print('-', color);
       x = -x;
     }
 

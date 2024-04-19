@@ -7,6 +7,8 @@ import kernel.io.keyboard.*;
 import kernel.io.Graphics;
 import kernel.io.ScreenSaver;
 import kernel.time.Timer;
+import kernel.bios.*;
+import kernel.hardware.PCI;
 import rte.DynamicRuntime;
 
 public class Kernel {
@@ -24,15 +26,19 @@ public class Kernel {
     Interrupts.initPic();
     Interrupts.setInterruptFlag();
 
-    // testGraphicMode();
-
     // BIOS.switchToGraphicsMode();
     // Graphics.drawRect(0, 0, 20, 20, (byte)0x20);
+    // Graphics.render();
+    // Timer.delay(1000);
+    // BIOS.switchToTextMode();
 
     Console.clear();
     printSplash();
     Timer.delay(500);
     Console.clear();
+
+    //SystemMemoryMap.printSystemMemoryMap();
+    PCI.printDevices();
 
     KeyBufferReader keyBufferReader = new KeyBufferReader(Keyboard.keyBuffer);
     KeyboardTextInterpreter keyboardTextInterpreter = new KeyboardTextInterpreter(keyBufferReader);

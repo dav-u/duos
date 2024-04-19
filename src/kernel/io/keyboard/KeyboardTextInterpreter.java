@@ -16,8 +16,11 @@ public class KeyboardTextInterpreter {
 
   public void execute() {
     // make sure that no new events come in while we work on the buffer
+    // if interrupt enabled
     // Interrupts.clearInterruptFlag();
 
+    // if interrupts were enabled before we cleared
+    // Interrupts.setInterruptFlag();
     KeyEvent event = keyBufferReader.readNext();
     if (event == null) return;
 
@@ -38,6 +41,5 @@ public class KeyboardTextInterpreter {
     if (c != '\0' && event.type == KeyEvent.Press)
       Console.print(c);
 
-    // Interrupts.setInterruptFlag();
   }
 }
