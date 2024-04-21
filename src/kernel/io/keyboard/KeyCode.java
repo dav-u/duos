@@ -107,6 +107,19 @@ public class KeyCode {
   public final static int PERIOD = 52;
   public final static int MINUS = 53;
 
+  public final static int F1 = 59;
+  public final static int F2 = 60;
+  public final static int F3 = 61;
+  public final static int F4 = 62;
+  public final static int F5 = 63;
+  public final static int F6 = 64;
+  public final static int F7 = 65;
+  public final static int F8 = 66;
+  public final static int F9 = 67;
+  public final static int F10 = 68;
+  public final static int F11 = 87;
+  public final static int F12 = 88;
+
   /// Remove the e0 escape scancode from the keycode.
   /// If no e0 scancode is present the original code is returned.
   /// E.g. this makes RAlt to LAlt or NumpadEnter to Enter.

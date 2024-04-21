@@ -81,6 +81,19 @@ public class KeyMap {
     map.set(new Key(KeyCode.PERIOD, "PERIOD", '.', ':'));
     map.set(new Key(KeyCode.MINUS, "MINUS", '-', '_'));
 
+    map.set(new Key(KeyCode.F1, "F1", '\0', '\0'));
+    map.set(new Key(KeyCode.F2, "F2", '\0', '\0'));
+    map.set(new Key(KeyCode.F3, "F3", '\0', '\0'));
+    map.set(new Key(KeyCode.F4, "F4", '\0', '\0'));
+    map.set(new Key(KeyCode.F5, "F5", '\0', '\0'));
+    map.set(new Key(KeyCode.F6, "F6", '\0', '\0'));
+    map.set(new Key(KeyCode.F7, "F7", '\0', '\0'));
+    map.set(new Key(KeyCode.F8, "F8", '\0', '\0'));
+    map.set(new Key(KeyCode.F9, "F9", '\0', '\0'));
+    map.set(new Key(KeyCode.F10, "F10", '\0', '\0'));
+    map.set(new Key(KeyCode.F11, "F11", '\0', '\0'));
+    map.set(new Key(KeyCode.F12, "F12", '\0', '\0'));
+
     return map;
   }
 

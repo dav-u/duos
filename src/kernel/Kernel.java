@@ -40,8 +40,13 @@ public class Kernel {
     Timer.delay(500);
     Console.clear();
 
-    //SystemMemoryMap.printSystemMemoryMap();
-    // PCI.printDevices();
+    SystemMemoryMap.printSystemMemoryMap();
+    Timer.delay(3000);
+    Console.clear();
+
+    PCI.printDevices();
+    Timer.delay(3000);
+    Console.clear();
 
     Scheduler scheduler = new Scheduler();
     BaseTask baseTask = new BaseTask();
