@@ -3,7 +3,8 @@ package kernel.scheduler;
 import kernel.io.keyboard.KeyBufferReader;
 import kernel.io.keyboard.Keyboard;
 import kernel.io.keyboard.KeyEvent;
-
+import kernel.ErrorCode;
+import kernel.Kernel;
 import kernel.io.console.*;
 
 public class Scheduler {
@@ -17,8 +18,16 @@ public class Scheduler {
     keyBufferReader = new KeyBufferReader(Keyboard.keyBuffer);
   }
 
+  public void printTasks() {
+    for (int i = 0; i < taskCount; i++) {
+      Console.print(tasks[i].getName());
+      Console.print('\n');
+    }
+  }
+
   public void run() {
     handleKeyEvents();
+    // TODO: let tasks run
   }
 
   public void handleKeyEvents() {
@@ -26,7 +35,12 @@ public class Scheduler {
 
     while (keyEvent != null) {
       for (int i = 0; i < taskCount; i++) {
-        tasks[i].handleKeyEvent(keyEvent);
+        boolean wasHandled = tasks[i].handleKeyEvent(keyEvent);
+        if (wasHandled) {
+          // Console.print(tasks[i].getName());
+          // Console.print(" handled\n");
+          break;
+        }
       }
 
       keyEvent = keyBufferReader.readNext();
@@ -34,6 +48,9 @@ public class Scheduler {
   }
 
   public void addTask(Task task) {
+    if (!(task instanceof BaseTask) && task.priority <= 1)
+      Kernel.panic(ErrorCode.InvalidTaskPriority);
+
     for (int i = 0; i < taskCount; i++) {
       Task presentTask = tasks[i];
 

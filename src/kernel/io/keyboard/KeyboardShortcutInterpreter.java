@@ -3,8 +3,6 @@ package kernel.io.keyboard;
 import kernel.io.console.Console;
 
 public class KeyboardShortcutInterpreter {
-  private KeyBufferReader keyBufferReader;
-
   private int ctrlDown = 0;
   private int altDown = 0;
   private int shiftDown = 0;
@@ -12,8 +10,7 @@ public class KeyboardShortcutInterpreter {
   private int shortcutCount;
   private Shortcut[] shortcuts;
 
-  public KeyboardShortcutInterpreter(KeyBufferReader keyBufferReader) {
-    this.keyBufferReader = keyBufferReader;
+  public KeyboardShortcutInterpreter() {
     shortcuts = new Shortcut[10];
   }
 
@@ -27,44 +24,48 @@ public class KeyboardShortcutInterpreter {
     shortcutCount++;
   }
 
-  public void execute() {
-    KeyEvent event = keyBufferReader.readNext();
-    if (event == null) return;
-
-    // Console.print(event.key.name);
-    // Console.print('\n');
-
+  /*
+   * Returns true if a shortcut was executed by the key event.
+   */
+  public boolean handleKeyEvent(KeyEvent event) {
     if (KeyCode.removeEscape(event.key.code) == KeyCode.LCtrl) {
       if (event.type == KeyEvent.Down) ctrlDown++;
       else if (event.type == KeyEvent.Up) ctrlDown--;
-      return;
+      return false;
     }
 
     if (KeyCode.removeEscape(event.key.code) == KeyCode.LShift) {
       if (event.type == KeyEvent.Down) shiftDown++;
       else if (event.type == KeyEvent.Up) shiftDown--;
-      return;
+      return false;
     }
 
     if (KeyCode.removeEscape(event.key.code) == KeyCode.LAlt) {
       if (event.type == KeyEvent.Down) altDown++;
       else if (event.type == KeyEvent.Up) altDown--;
-      return;
+      return false;
     }
 
-    if (event.type != KeyEvent.Down) return;
+    if (event.type != KeyEvent.Down) return false;
 
+    boolean executedShortcut = false;
     for (int i = 0; i < shortcutCount; i++)
-      checkAndExecute(shortcuts[i], event);
+      executedShortcut = executedShortcut || checkAndExecute(shortcuts[i], event);
+
+    return executedShortcut;
   }
 
-  private void checkAndExecute(Shortcut shortcut, KeyEvent event) {
-    if (shortcut.Shift && shiftDown == 0) return;
-    if (shortcut.Ctrl && ctrlDown == 0) return;
-    if (shortcut.Alt && altDown == 0) return;
+  private boolean checkAndExecute(Shortcut shortcut, KeyEvent event) {
+    if (shortcut.Shift && shiftDown == 0) return false;
+    if (shortcut.Ctrl && ctrlDown == 0) return false;
+    if (shortcut.Alt && altDown == 0) return false;
 
-    if (event.key.code == shortcut.keyCode && event.type == KeyEvent.Down)
+    if (event.key.code == shortcut.keyCode && event.type == KeyEvent.Down) {
       shortcut.execute();
+      return true;
+    }
+  
+    return false;
   }
 
   private void enlargeShortcutsArray() {

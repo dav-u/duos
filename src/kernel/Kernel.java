@@ -10,9 +10,12 @@ import kernel.bios.*;
 import kernel.hardware.PCI;
 import kernel.scheduler.*;
 import rte.DynamicRuntime;
+import user.tasks.TaskRegistration;
 
 public class Kernel {
   private static String splashText = "\n  _____  _    _  ____   _____  \n |  __ \\| |  | |/ __ \\ / ____| \n | |  | | |  | | |  | | (___   \n | |  | | |  | | |  | |\\___ \\  \n | |__| | |__| | |__| |____) | \n |_____/ \\____/ \\____/|_____/  \n                               \n";
+
+  private static boolean isRunning = true;
 
   public static void main() {
     // setup runtime for object allocation
@@ -40,25 +43,16 @@ public class Kernel {
     //SystemMemoryMap.printSystemMemoryMap();
     // PCI.printDevices();
 
-    // KeyBufferReader keyBufferReader = new KeyBufferReader(Keyboard.keyBuffer);
-    // KeyboardTextInterpreter keyboardTextInterpreter = new KeyboardTextInterpreter(keyBufferReader);
-
-    // KeyBufferReader keyBufferReader2 = new KeyBufferReader(Keyboard.keyBuffer);
-    // KeyboardShortcutInterpreter keyboardShortcutInterpreter = new KeyboardShortcutInterpreter(keyBufferReader2);
-
-    // keyboardShortcutInterpreter.addShortcut(new BreakpointShortcut());
-
-    // while (true) {
-    //   keyboardTextInterpreter.execute();
-    //   keyboardShortcutInterpreter.execute();
-    // }
-
     Scheduler scheduler = new Scheduler();
     BaseTask baseTask = new BaseTask();
     baseTask.priority = 1;
     scheduler.addTask(baseTask);
 
-    while (true) {
+    TaskRegistration.registerUserTasks(scheduler);
+
+    // scheduler.printTasks();
+
+    while (isRunning) {
       scheduler.run();
     }
   }
@@ -68,6 +62,11 @@ public class Kernel {
     Console.print("KERNEL PANIC: ERROR 0x", SymbolColor.RED);
     Console.printHex(errorCode, SymbolColor.RED);
     while(true);
+  }
+
+  public static void shutdown() {
+    // TODO: let tasks finish up
+    isRunning = false;
   }
 
   private static void printSplash() {
