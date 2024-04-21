@@ -16,12 +16,11 @@ public class Keyboard {
   private static boolean[] pressState;
   private static boolean[] e0PressState;
   
-
   public static void init() {
     keyMap = KeyMap.greateGermanKeymap();
     pressState = new boolean[keyCount];
     e0PressState = new boolean[keyCount];
-    keyBuffer = new KeyBuffer(200);
+    keyBuffer = new KeyBuffer(256);
   }
 
   /// Inspired by http://www.lowlevel.eu/wiki/Keyboard_Controller.
@@ -86,9 +85,6 @@ public class Keyboard {
       keyDown(key);
       return;
     }
-
-    // Console.printHex(code, SymbolColor.DEFAULT);
-    // Console.print('\n');
   }
 
   private static void keyUp(Key key) {
@@ -107,13 +103,6 @@ public class Keyboard {
 
   private static void keyPress(Key key) {
     keyBuffer.appendEvent(key, KeyEvent.Press);
-    
-    // if (key.character == '\0')
-    //   return;
-
-    // if (pressState[KeyCode.LShift] || pressState[KeyCode.RShift])
-    //   Console.print(key.shiftCharacter);
-    // else Console.print(key.character);
   }
 
   private static boolean getPressState(int code) {

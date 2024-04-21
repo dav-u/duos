@@ -1,5 +1,6 @@
 package kernel.io.keyboard;
 
+import kernel.interrupt.Interrupts;
 import kernel.io.console.Console;
 
 public class KeyBufferReader {
@@ -12,15 +13,16 @@ public class KeyBufferReader {
   }
 
   public KeyEvent readNext() {
+    // when I uncomment these pic interrupt lines I cannot type
+    // Interrupts.preventPicInterrupts();
+
     // this can skip key event we were to slow to read
     this.nextTimestamp = keyBuffer.getValidNextTimestamp(nextTimestamp);
     KeyEvent event = keyBuffer.getEvent(nextTimestamp);
-    if (event != null) {
+    if (event != null)
       nextTimestamp++;
-      // Console.print("Incremented current timestamp in reader\n");
-    }
 
-    // Console.printHex(currentTimestamp, (byte)7);
+    // Interrupts.restorePicInterrupts();
 
     return event;
   }

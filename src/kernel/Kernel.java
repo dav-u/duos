@@ -5,10 +5,10 @@ import kernel.io.console.tests.*;
 import kernel.interrupt.*;
 import kernel.io.keyboard.*;
 import kernel.io.Graphics;
-import kernel.io.ScreenSaver;
 import kernel.time.Timer;
 import kernel.bios.*;
 import kernel.hardware.PCI;
+import kernel.scheduler.*;
 import rte.DynamicRuntime;
 
 public class Kernel {
@@ -38,19 +38,28 @@ public class Kernel {
     Console.clear();
 
     //SystemMemoryMap.printSystemMemoryMap();
-    PCI.printDevices();
+    // PCI.printDevices();
 
-    KeyBufferReader keyBufferReader = new KeyBufferReader(Keyboard.keyBuffer);
-    KeyboardTextInterpreter keyboardTextInterpreter = new KeyboardTextInterpreter(keyBufferReader);
+    // KeyBufferReader keyBufferReader = new KeyBufferReader(Keyboard.keyBuffer);
+    // KeyboardTextInterpreter keyboardTextInterpreter = new KeyboardTextInterpreter(keyBufferReader);
 
-    KeyBufferReader keyBufferReader2 = new KeyBufferReader(Keyboard.keyBuffer);
-    KeyboardShortcutInterpreter keyboardShortcutInterpreter = new KeyboardShortcutInterpreter(keyBufferReader2);
+    // KeyBufferReader keyBufferReader2 = new KeyBufferReader(Keyboard.keyBuffer);
+    // KeyboardShortcutInterpreter keyboardShortcutInterpreter = new KeyboardShortcutInterpreter(keyBufferReader2);
 
-    keyboardShortcutInterpreter.addShortcut(new BreakpointShortcut());
+    // keyboardShortcutInterpreter.addShortcut(new BreakpointShortcut());
+
+    // while (true) {
+    //   keyboardTextInterpreter.execute();
+    //   keyboardShortcutInterpreter.execute();
+    // }
+
+    Scheduler scheduler = new Scheduler();
+    BaseTask baseTask = new BaseTask();
+    baseTask.priority = 1;
+    scheduler.addTask(baseTask);
 
     while (true) {
-      keyboardTextInterpreter.execute();
-      keyboardShortcutInterpreter.execute();
+      scheduler.run();
     }
   }
 

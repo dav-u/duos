@@ -1,5 +1,7 @@
 package kernel.interrupt;
 
+import kernel.ErrorCode;
+import kernel.Kernel;
 import rte.*;
 
 public class Interrupts {
@@ -16,6 +18,8 @@ public class Interrupts {
   private static long[] interruptTableMemory;
 
   public static InterruptDescriptorTable interruptDescriptorTable;
+
+  private static int preventPicInterruptsCount = 0;
 
   public static void createInterruptTable() {
     // One long is 8 bytes, like one entry.
@@ -50,6 +54,22 @@ public class Interrupts {
   public static void clearInterruptFlag() {
     MAGIC.inline(0xFA); // CLI
     interruptsEnabled = false;
+  }
+
+  public static void preventPicInterrupts() {
+    preventPicInterruptsCount++;
+    if (interruptsEnabled)
+      clearInterruptFlag();
+  }
+
+  public static void restorePicInterrupts() {
+    preventPicInterruptsCount--;
+
+    if (preventPicInterruptsCount < 0)
+      Kernel.panic(ErrorCode.RestoreInterruptsCalledTooOften);
+
+    if (preventPicInterruptsCount == 0)
+      setInterruptFlag();
   }
 
   /// Returns whether interrupts are currently enabled
