@@ -32,7 +32,7 @@ public class Interrupts {
     interruptDescriptorTable = (InterruptDescriptorTable)MAGIC.cast2Struct(tableStartAddress);
 
     fillInterruptTable();
-    loadIdt(tableStartAddress, 255 * 8); // 255 * 8
+    loadIdt(tableStartAddress, 256 * 8 - 1);
   }
 
   public static void acknowledgePicMasterInterrupt() {
