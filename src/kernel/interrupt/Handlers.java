@@ -41,7 +41,8 @@ public class Handlers {
   /// The saved instruction pointer points to the byte after the INT3 instruction. 
   @SJC.Interrupt
   public static void Breakpoint() {
-    Console.print("Breakpoint");
+    Kernel.blueScreen(false);
+    // Console.print("Breakpoint");
     while(true);
   }
 

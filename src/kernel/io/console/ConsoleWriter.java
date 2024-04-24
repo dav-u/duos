@@ -11,8 +11,8 @@ public class ConsoleWriter {
   public void println(String str) { print(str); println(); }
 
   public void setColor(byte fg, byte bg) {
-    color = PixelHelper.setForeground(color, fg);
-    color = PixelHelper.setBackground(color, bg);
+    color = SymbolColor.setForeground(color, fg);
+    color = SymbolColor.setBackground(color, bg);
   }
 
   public void setCursor(int newX, int newY) {
