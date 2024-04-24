@@ -2,6 +2,7 @@ package kernel.bios;
 
 import kernel.io.console.Console;
 import kernel.Kernel;
+import kernel.Memory;
 import kernel.ErrorCode;
 
 public class SystemMemoryMap {
@@ -25,26 +26,39 @@ public class SystemMemoryMap {
     public long lengthInBytes;
     public int typeOfAddressRange;
   }
+
+  private static int continuation = 0;
+  private static boolean wasReset = true;
+
+  public static int getHeapMaxAddress() {
+    reset();
+    while (true) {
+      SystemMemoryMapAddressRangeDescriptor descriptor = getNext();
+      if (descriptor == null) break;
+
+      // Heap is available to OS
+      if (descriptor.typeOfAddressRange != SystemMemoryMapAddressType.AvailableToOs)
+        continue;
+
+      // Heap is not the stack
+      long descriptorEndAddress = descriptor.baseAddress + descriptor.lengthInBytes;
+      if (Memory.StackStart >= descriptor.baseAddress && Memory.StackStart <= descriptorEndAddress)
+        continue;
+
+      return (int)descriptorEndAddress;
+    }
+
+    return -1;
+  }
   
   public static void printSystemMemoryMap() {
-    // continuation must be 0 for first call
-    int continuation = 0;
+    reset();
+    while (true) {
+      SystemMemoryMapAddressRangeDescriptor descriptor = getNext();
+      if (descriptor == null) break;
 
-    do {
-      // size always 20
-      callSetSystemMemoryMap(continuation, 20);
-
-      // error
-      if ((BIOS.regs.FLAGS & BIOS.CF_MASK) != 0)
-        Kernel.panic(ErrorCode.BiosCallFailed);
-
-      continuation = BIOS.regs.EBX;
-
-      SystemMemoryMapAddressRangeDescriptor descriptor =
-        (SystemMemoryMapAddressRangeDescriptor)MAGIC.cast2Struct(BIOS.BIOS_MEMMAP_START);
-      
       printDescriptor(descriptor);
-    } while (continuation != 0); // we are finished if continuation (EBX) is 0
+    }
   }
 
   public static String mapAddressTypeToString(int type) {
@@ -60,6 +74,32 @@ public class SystemMemoryMap {
     
       default: return "Undefined";
     }
+  }
+
+  private static void reset() {
+    wasReset = true;
+    continuation = 0;
+  }
+
+  private static SystemMemoryMapAddressRangeDescriptor getNext() {
+    // when we see 0 we are done (except this is the first getNext())
+    if (!wasReset && continuation == 0) return null;
+
+    wasReset = false;
+
+    // size always 20
+    callSetSystemMemoryMap(continuation, 20);
+
+    // error
+    if ((BIOS.regs.FLAGS & BIOS.CF_MASK) != 0)
+      Kernel.panic(ErrorCode.BiosCallFailed);
+
+    continuation = BIOS.regs.EBX;
+
+    SystemMemoryMapAddressRangeDescriptor descriptor =
+      (SystemMemoryMapAddressRangeDescriptor)MAGIC.cast2Struct(BIOS.BIOS_MEMMAP_START);
+    
+    return descriptor;
   }
 
   private static void callSetSystemMemoryMap(int continuation, int size) {

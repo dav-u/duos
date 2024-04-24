@@ -1,5 +1,7 @@
 package kernel.io.keyboard;
 
+import kernel.io.console.Console;
+
 /// Maps key codes to Key classes
 public class KeyMap {
   private Key[] map;
@@ -101,5 +103,20 @@ public class KeyMap {
     return KeyCode.isE0Code(code)
       ? e0Map[KeyCode.removeEscape(code)]
       : map[code];
+  }
+
+  public void print() {
+    for (int i = 0; i < map.length; i++) {
+      if (map[i] == null) continue;
+
+      Key k = map[i];
+      Console.print(k.name);
+      Console.print(k.code, (byte)7);
+      if (k.character != '\0')
+        Console.print(k.character);
+      if (k.shiftCharacter != '\0')
+        Console.print(k.shiftCharacter);
+      Console.print(' ');
+    }
   }
 }

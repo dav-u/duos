@@ -7,4 +7,5 @@ public class ErrorCode {
   public final static int BiosCallFailed = 0x4;
   public final static int RestoreInterruptsCalledTooOften = 0x5;
   public final static int InvalidTaskPriority = 0x6;
+  public final static int OutOfMemory = 0x7;
 }

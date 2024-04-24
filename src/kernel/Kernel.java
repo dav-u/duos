@@ -26,14 +26,26 @@ public class Kernel {
 
     // setup runtime for object allocation
     DynamicRuntime.init();
+    Console.clear();
+    Console.print("Initialized dynamic runtime\n");
 
     Interrupts.createInterruptTable();
+    Console.print("Created interrupt table\n");
 
     Keyboard.init();
+    Console.print("Initialized keyboard\n");
 
     // enable hardware interrupts
     Interrupts.initPic();
     Interrupts.setInterruptFlag();
+    Console.print("Enabled hardware interrupts\n");
+
+    Timer.delay(1000);
+
+    Console.clear();
+    printSplash();
+    Timer.delay(1000);
+    Console.clear();
 
     // BIOS.switchToGraphicsMode();
     // Graphics.drawRect(0, 0, 20, 20, (byte)0x20);
@@ -41,18 +53,13 @@ public class Kernel {
     // Timer.delay(1000);
     // BIOS.switchToTextMode();
 
-    //Console.clear();
-    //printSplash();
-    //Timer.delay(500);
-    //Console.clear();
-
-    //SystemMemoryMap.printSystemMemoryMap();
-    //Timer.delay(3000);
-    //Console.clear();
+    // Console.clear();
+    // SystemMemoryMap.printSystemMemoryMap();
+    // Timer.delay(1000);
+    // Console.clear();
 
     //PCI.printDevices();
     //Timer.delay(3000);
-    Console.clear();
 
     Scheduler scheduler = new Scheduler();
     BaseTask baseTask = new BaseTask();
@@ -68,11 +75,19 @@ public class Kernel {
     }
   }
 
-  public static void panic(int errorCode) {
+  public static void panic(int errorCode, String message) {
     Console.cursorIndex = 0;
     Console.print("KERNEL PANIC: ERROR 0x", SymbolColor.RED);
     Console.printHex(errorCode, SymbolColor.RED);
+    if (message.length() != 0) {
+      Console.print("\nMESSAGE: ", SymbolColor.RED);
+      Console.print(message, SymbolColor.RED);
+    }
     while(true);
+  }
+
+  public static void panic(int errorCode) {
+    panic(errorCode, "");
   }
 
   public static void shutdown() {
@@ -156,9 +171,9 @@ public class Kernel {
     // https://wiki.osdev.org/Stack_Trace
     Console.print("Stacktrace:\n", color);
 
-    Console.print("EBP=");
+    Console.print("EBP=", color);
     Console.printHex(prevEbp, color);
-    Console.print(" EIP=");
+    Console.print(" EIP=", color);
     Console.printHex(prevEip, color);
     Console.print('\n');
 
@@ -167,9 +182,9 @@ public class Kernel {
       if (prevEbp == 0) break;
 
       prevEip = MAGIC.rMem32(prevEbp+4);
-      Console.print("EBP=");
+      Console.print("EBP=", color);
       Console.printHex(prevEbp, color);
-      Console.print(" EIP=");
+      Console.print(" EIP=", color);
       Console.printHex(prevEip, color);
       Console.print('\n');
     }
