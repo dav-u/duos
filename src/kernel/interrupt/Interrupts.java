@@ -47,6 +47,9 @@ public class Interrupts {
   /// Enables interrupts
   public static void setInterruptFlag() {
     interruptsEnabled = true;
+
+    // twice for double power! (for some reason this fixes a bug :/)
+    MAGIC.inline(0xFB); // STI
     MAGIC.inline(0xFB); // STI
   }
 

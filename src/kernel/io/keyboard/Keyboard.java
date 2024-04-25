@@ -76,14 +76,13 @@ public class Keyboard {
       return;
     }
 
-    if (isMakeCode(code)) {
-      keyPress(key);
-    }
-
     if (isMakeCode(code) && !isKeyPressed) {
       setPressState(normalizedCode, true);
       keyDown(key);
-      return;
+    }
+
+    if (isMakeCode(code)) {
+      keyPress(key);
     }
   }
 

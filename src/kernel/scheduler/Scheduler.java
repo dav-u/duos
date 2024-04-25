@@ -3,6 +3,7 @@ package kernel.scheduler;
 import kernel.io.keyboard.KeyBufferReader;
 import kernel.io.keyboard.Keyboard;
 import kernel.io.keyboard.KeyEvent;
+import kernel.io.keyboard.KeyCode;
 import kernel.ErrorCode;
 import kernel.Kernel;
 import kernel.io.console.*;
@@ -37,6 +38,10 @@ public class Scheduler {
       for (int i = 0; i < taskCount; i++) {
         boolean wasHandled = tasks[i].handleKeyEvent(keyEvent);
         if (wasHandled) {
+          if (keyEvent.key.code == KeyCode.C && keyEvent.type == KeyEvent.Down) {
+            Console.print(tasks[i].getName());
+            Console.print(" handled\n");
+          }
           // Console.print(tasks[i].getName());
           // Console.print(" handled\n");
           break;

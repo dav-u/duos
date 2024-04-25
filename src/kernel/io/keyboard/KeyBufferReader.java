@@ -13,9 +13,7 @@ public class KeyBufferReader {
   }
 
   public KeyEvent readNext() {
-    // when I uncomment these pic interrupt lines I cannot type
-    // Interrupts.preventPicInterrupts();
-    // Interrupts.clearInterruptFlag();
+    Interrupts.preventPicInterrupts();
 
     // this can skip key event we were to slow to read
     this.nextTimestamp = keyBuffer.getValidNextTimestamp(nextTimestamp);
@@ -23,8 +21,7 @@ public class KeyBufferReader {
     if (event != null)
       nextTimestamp++;
 
-    // Interrupts.restorePicInterrupts();
-    // Interrupts.setInterruptFlag();
+    Interrupts.restorePicInterrupts();
 
     return event;
   }
