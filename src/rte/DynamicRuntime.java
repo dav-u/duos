@@ -5,6 +5,7 @@ import kernel.Memory;
 import kernel.ErrorCode;
 import kernel.io.console.Console;
 
+// Either use GarbageCollectingInstanceCreator or NaiveInstanceCreator
 import rte.instancing.GarbageCollectingInstanceCreator;
 
 public class DynamicRuntime {
@@ -13,7 +14,7 @@ public class DynamicRuntime {
   }
 
   public static Object newInstance(int scalarSize, int relocEntries, SClassDesc type) {
-    GarbageCollectingInstanceCreator.newInstance(scalarSize, relocEntries, type);
+    return GarbageCollectingInstanceCreator.newInstance(scalarSize, relocEntries, type);
   }
 
   // this method was provided
