@@ -37,15 +37,7 @@ public class Scheduler {
     while (keyEvent != null) {
       for (int i = 0; i < taskCount; i++) {
         boolean wasHandled = tasks[i].handleKeyEvent(keyEvent);
-        if (wasHandled) {
-          if (keyEvent.key.code == KeyCode.C && keyEvent.type == KeyEvent.Down) {
-            Console.print(tasks[i].getName());
-            Console.print(" handled\n");
-          }
-          // Console.print(tasks[i].getName());
-          // Console.print(" handled\n");
-          break;
-        }
+        if (wasHandled) break;
       }
 
       keyEvent = keyBufferReader.readNext();
