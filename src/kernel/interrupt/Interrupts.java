@@ -7,14 +7,20 @@ import rte.*;
 public class Interrupts {
   private final static int MASTER = 0x20, SLAVE = 0xA0;
 
-  /// End of Interrupt
+  /*
+   * End of Interrupt
+  */
   private final static byte EOI = 0x20;
 
-  /// Interrupts are disables per default.
-  /// Use setInterruptFlag to enable.
+  /*
+   * Interrupts are disables per default.
+   * Use setInterruptFlag to enable.
+  */
   private static boolean interruptsEnabled = false;
 
-  /// Reference to the interrupt table memory so it does not get garbage collected.
+  /*
+   * Reference to the interrupt table memory so it does not get garbage collected.
+  */
   private static long[] interruptTableMemory;
 
   public static InterruptDescriptorTable interruptDescriptorTable;
@@ -44,7 +50,9 @@ public class Interrupts {
     MAGIC.wIOs8(SLAVE, EOI);
   }
 
-  /// Enables interrupts
+  /*
+   * Enables interrupts
+  */
   public static void setInterruptFlag() {
     interruptsEnabled = true;
 
@@ -53,7 +61,9 @@ public class Interrupts {
     MAGIC.inline(0xFB); // STI
   }
 
-  /// Disables interrupts
+  /*
+   * Disables interrupts
+  */
   public static void clearInterruptFlag() {
     MAGIC.inline(0xFA); // CLI
     interruptsEnabled = false;
@@ -75,25 +85,33 @@ public class Interrupts {
       setInterruptFlag();
   }
 
-  /// Returns whether interrupts are currently enabled
+  /*
+   * Returns whether interrupts are currently enabled
+  */
   public static boolean areInterruptsEnabled() {
     return interruptsEnabled;
   }
 
-  /// Load Interrupt-Descriptor-Table with base and limit from createInterruptTable
+  /*
+   * Load Interrupt-Descriptor-Table with base and limit from createInterruptTable
+  */
   public static void loadIdt() {
     int tableStartAddress = MAGIC.addr(interruptTableMemory[0]);
     loadIdt(tableStartAddress, 255 * 8);
   }
 
-  /// Load Interrupt-Descriptor-Table with specified base and limit
+  /*
+   * Load Interrupt-Descriptor-Table with specified base and limit
+  */
   public static void loadIdt(int baseAddress, int tableLimit) {
     long tmp=(((long)baseAddress)<<16)|(long)tableLimit;
     MAGIC.inline(0x0F, 0x01, 0x5D); MAGIC.inlineOffset(1, tmp); // lidt [ebp-0x08/tmp]
   }
 
-  /// Initializes the PIC (Programmable Interrupt Controller).
-  /// The PIC controls interrupts from external hardware (like the keyboard)
+  /*
+   * Initializes the PIC (Programmable Interrupt Controller).
+   * The PIC controls interrupts from external hardware (like the keyboard)
+  */
   public static void initPic() {
     programmChip(MASTER, 0x20, 0x04); //init offset and slave config of master
     programmChip(SLAVE, 0x28, 0x02); //init offset and slave config of slave

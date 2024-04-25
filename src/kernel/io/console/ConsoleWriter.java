@@ -1,10 +1,14 @@
 package kernel.io.console;
 
-/// This class provides basic output functionality
+/*
+ * This class provides basic output functionality
+ */
 public class ConsoleWriter {
   private byte color = SymbolColor.DEFAULT;
 
-  /// predefined methods
+  /*
+   * predefined methods
+  */
   public void println(char c) { print(c); println(); }
   public void println(int i) { print(i); println(); }
   public void println(long l) { print(l); println(); }

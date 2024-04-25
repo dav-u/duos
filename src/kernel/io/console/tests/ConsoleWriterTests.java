@@ -3,7 +3,9 @@ package kernel.io.console.tests;
 import kernel.io.console.ConsoleWriter;
 import kernel.io.console.Console;
 
-/// Provides methods that test the ConsoleWriter
+/*
+ * Provides methods that test the ConsoleWriter
+ */
 public class ConsoleWriterTests {
   public ConsoleWriter writer;
 

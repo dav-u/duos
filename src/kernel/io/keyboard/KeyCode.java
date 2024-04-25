@@ -1,10 +1,12 @@
 package kernel.io.keyboard;
 
-/// These keyboard codes (and the according names) are
-/// inspired by the german keyboard layout
-/// but can later be remapped in any way using KeyMap.
-///
-/// TODO: This is not complete yet but a good start.
+/*
+ * These keyboard codes (and the according names) are
+ * inspired by the german keyboard layout
+ * but can later be remapped in any way using KeyMap.
+ * 
+ * TODO: This is not complete yet but a good start.
+ */
 public class KeyCode {
   public final static int Esc = 0x01;
   public final static int N1 = 0x02;
@@ -120,10 +122,12 @@ public class KeyCode {
   public final static int F11 = 87;
   public final static int F12 = 88;
 
-  /// Remove the e0 escape scancode from the keycode.
-  /// If no e0 scancode is present the original code is returned.
-  /// E.g. this makes RAlt to LAlt or NumpadEnter to Enter.
-  /// This is generally useful for checking if any Alt or any Ctrl is pressed.
+  /*
+   * Remove the e0 escape scancode from the keycode.
+   * If no e0 scancode is present the original code is returned.
+   * E.g. this makes RAlt to LAlt or NumpadEnter to Enter.
+   * This is generally useful for checking if any Alt or any Ctrl is pressed.
+  */
   public static int removeEscape(int code) {
     return code & 0xFF;
   }

@@ -11,7 +11,9 @@ public class Timer {
     time++;
   }
 
-  /// Waits for the specified amounts of milliseconds before continuing execution.
+  /*
+   * Waits for the specified amounts of milliseconds before continuing execution.
+  */
   public static void delay(int ms) {
     delayUntil = time + ms / millisecondsPerTick;
 

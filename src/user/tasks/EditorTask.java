@@ -18,9 +18,10 @@ public class EditorTask extends Task {
   }
 
   /* 
+  /*
    * Returns true if it handled the event.
    * Returns false if another low priority task should handle the event (as well).
-  */
+   */
   @Override
   public boolean handleKeyEvent(KeyEvent event) {
     // KeyboardTextInterpreter keyboardTextInterpreter = new KeyboardTextInterpreter(keyBufferReader);

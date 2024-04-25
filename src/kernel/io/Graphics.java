@@ -1,6 +1,8 @@
 package kernel.io;
 
-/// Enables drawing in graphics mode.
+/*
+ * Enables drawing in graphics mode.
+ */
 public class Graphics {
   public static final int width = 320;
   public static final int height = 200;
@@ -28,7 +30,9 @@ public class Graphics {
     buffer[offset] = color;
   }
 
-  /// Renders the buffer to the screen
+  /*
+   * Renders the buffer to the screen
+  */
   public static void render() {
     for (int i = 0; i < size; i++)
       MAGIC.wMem8(videoMemoryAddress + i, buffer[i]);

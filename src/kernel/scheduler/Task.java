@@ -14,9 +14,10 @@ public abstract class Task {
   public abstract String getName();
 
   /* 
+  /*
    * Returns true if it handled the event.
    * Returns false if another low priority task should handle the event (as well).
-  */
+   */
   public abstract boolean handleKeyEvent(KeyEvent event);
 
   /*

@@ -23,7 +23,9 @@ public class Keyboard {
     keyBuffer = new KeyBuffer(256);
   }
 
-  /// Inspired by http://www.lowlevel.eu/wiki/Keyboard_Controller.
+  /*
+   * Inspired by http://www.lowlevel.eu/wiki/Keyboard_Controller.
+  */
   public static void readIoBuffer() {
     int code = MAGIC.rIOs8(0x60);
     code &= 0xFF;

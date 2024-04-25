@@ -30,7 +30,7 @@ public class NaiveInstanceCreator {
     // align start address
     newObjectStartAddress = Bits.alignToMultipleOf4Up(newObjectStartAddress);
 
-    // 2 * 4 -> skip _r_next and _r_type to point to _r_relocEntries
+    // skip relocEntries and point to _r_relocEntries
     int newObjectAddress = newObjectStartAddress + relocEntries * 4;
 
     // points to first byte after newObject

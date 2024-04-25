@@ -2,7 +2,9 @@ package kernel.io.keyboard;
 
 import kernel.io.console.Console;
 
-/// Maps key codes to Key classes
+/*
+ * Maps key codes to Key classes
+ */
 public class KeyMap {
   private Key[] map;
   private Key[] e0Map;
