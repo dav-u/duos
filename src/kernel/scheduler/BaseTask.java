@@ -19,7 +19,7 @@ public class BaseTask extends Task {
   }
 
   @Override
-  public boolean handleKeyEvent(KeyEvent event) {
+  public boolean handleKeyEventInternal(KeyEvent event) {
     return keyboardShortcutInterpreter.handleKeyEvent(event);
   }
 

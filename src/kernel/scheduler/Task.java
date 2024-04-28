@@ -17,10 +17,18 @@ public abstract class Task {
    * Returns true if it handled the event.
    * Returns false if another low priority task should handle the event (as well).
    */
-  public abstract boolean handleKeyEvent(KeyEvent event);
+  public boolean handleKeyEvent(KeyEvent event) {
+    return handleKeyEventInternal(event);
+  }
 
   /*
    * Returns false if it wants to quit.
    */
   public abstract boolean run();
+
+  /*
+   * Returns true if it handled the event.
+   * Returns false if another low priority task should handle the event (as well).
+   */
+  protected abstract boolean handleKeyEventInternal(KeyEvent event);
 }

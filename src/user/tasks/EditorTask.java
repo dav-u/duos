@@ -2,10 +2,10 @@ package user.tasks;
 
 import kernel.io.keyboard.KeyboardTextInterpreter;
 import kernel.io.keyboard.KeyEvent;
-import kernel.scheduler.Task;
+import kernel.scheduler.UiTask;
 import kernel.io.console.Console;
 
-public class EditorTask extends Task {
+public class EditorTask extends UiTask {
   KeyboardTextInterpreter keyboardTextInterpreter;
 
   public EditorTask() {
@@ -17,13 +17,21 @@ public class EditorTask extends Task {
     return "EditorTask";
   }
 
-  /* 
+  @Override
+  public void display() { }
+
+  @Override
+  public void onActivate() {
+    Console.clear();
+    Console.print("Editor:\n");
+  }
+  
   /*
    * Returns true if it handled the event.
    * Returns false if another low priority task should handle the event (as well).
    */
   @Override
-  public boolean handleKeyEvent(KeyEvent event) {
+  public boolean handleKeyEventInternal(KeyEvent event) {
     // KeyboardTextInterpreter keyboardTextInterpreter = new KeyboardTextInterpreter(keyBufferReader);
     keyboardTextInterpreter.handleKeyEvent(event);
     char c = keyboardTextInterpreter.getChar();

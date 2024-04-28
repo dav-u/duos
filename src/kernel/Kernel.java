@@ -116,12 +116,11 @@ public class Kernel {
     byte color = SymbolColor.DEFAULT;
     color = SymbolColor.setBackground(color, SymbolColor.BLUE);
     color = SymbolColor.setLight(color, true);
-    //Console.print("BlueScreen", color);
 
     int ebp=0;
     MAGIC.inline(0x89, 0x6D); MAGIC.inlineOffset(1, ebp); //mov [ebp+xx],ebp
 
-    Console.printHex(ebp, color);
+    // Console.printHex(ebp, color);
 
     /*
     PUSHA: (https://c9x.me/x86/html/file_module_x86_id_270.html)

@@ -11,12 +11,14 @@ import kernel.io.console.*;
 public class Scheduler {
   // TODO: maybe a linked list is more elegant than an array?
   private Task[] tasks;
+  private UiTask activeUiTask;
   private int taskCount = 0;
   private KeyBufferReader keyBufferReader;
 
   public Scheduler() {
     tasks = new Task[10];
     keyBufferReader = new KeyBufferReader(Keyboard.keyBuffer);
+    activeUiTask = null;
   }
 
   public void printTasks() {
@@ -24,6 +26,23 @@ public class Scheduler {
       Console.print(tasks[i].getName());
       Console.print('\n');
     }
+  }
+
+  public void displayUi() {
+    if (activeUiTask == null) return;
+
+    activeUiTask.display();
+  }
+
+  public void setActiveUiTask(UiTask task) {
+    if (activeUiTask != null) {
+      activeUiTask.isActive = false;
+    }
+
+    activeUiTask = task;
+    activeUiTask.isActive = true;
+
+    activeUiTask.onActivate();
   }
 
   public void run() {
@@ -41,6 +60,15 @@ public class Scheduler {
       }
 
       keyEvent = keyBufferReader.readNext();
+    }
+  }
+
+  public void removeTask(Task task) {
+    for (int i = 0; i < taskCount; i++) {
+      if (task == tasks[i]) {
+        removeTaskAt(i);
+        return;
+      }
     }
   }
 
@@ -64,5 +92,11 @@ public class Scheduler {
     // if we task to insert has lower priority than every other 
     // present task, just append it
     tasks[taskCount++] = task;
+  }
+
+  private void removeTaskAt(int index) {
+    for (; index < taskCount - 1; index++) {
+      tasks[index] = tasks[index + 1];
+    }
   }
 }

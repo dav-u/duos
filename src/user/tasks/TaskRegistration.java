@@ -8,5 +8,6 @@ public class TaskRegistration {
     editorTask.priority = 3;
 
     scheduler.addTask(editorTask);
+    scheduler.setActiveUiTask(editorTask);
   }
 }
