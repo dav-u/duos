@@ -1,10 +1,11 @@
-/*
- * A service is a task that cannot handle user input
- */
+package kernel.scheduler;
 
 import kernel.io.keyboard.KeyEvent;
 import kernel.scheduler.Task;
 
+/*
+ * A service is a task that cannot handle user input
+ */
 public abstract class Service extends Task {
   /*
    * Returns true if it handled the event.

@@ -135,4 +135,22 @@ public class KeyCode {
   public static boolean isE0Code(int code) {
     return (code & 0xE000) == 0xE000;
   }
+
+  public static boolean isFKey(int code) {
+    int normalizedCode = removeEscape(code);
+
+    return
+      normalizedCode == F1
+      || normalizedCode == F2
+      || normalizedCode == F3
+      || normalizedCode == F4
+      || normalizedCode == F5
+      || normalizedCode == F6
+      || normalizedCode == F7
+      || normalizedCode == F8
+      || normalizedCode == F9
+      || normalizedCode == F10
+      || normalizedCode == F11
+      || normalizedCode == F12;
+  }
 }

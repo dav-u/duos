@@ -4,12 +4,15 @@ import kernel.io.keyboard.KeyboardTextInterpreter;
 import kernel.io.keyboard.KeyEvent;
 import kernel.scheduler.UiTask;
 import kernel.io.console.Console;
+import kernel.io.console.ConsoleSwitchBuffer;
 
 public class EditorTask extends UiTask {
-  KeyboardTextInterpreter keyboardTextInterpreter;
+  private KeyboardTextInterpreter keyboardTextInterpreter;
+  private ConsoleSwitchBuffer switchBuffer;
 
   public EditorTask() {
     keyboardTextInterpreter = new KeyboardTextInterpreter();
+    switchBuffer = new ConsoleSwitchBuffer();
   }
 
   @Override
@@ -22,8 +25,7 @@ public class EditorTask extends UiTask {
 
   @Override
   public void onActivate() {
-    Console.clear();
-    Console.print("Editor:\n");
+    Console.switchBufferTo(switchBuffer);
   }
   
   /*
