@@ -2,7 +2,7 @@ package kernel.io.console;
 
 public class Console {
   private static final int screenMemoryAddress = 0xB8000;
-  public static ConsoleBuffer buffer = (ConsoleBuffer)MAGIC.cast2Struct(screenMemoryAddress);
+  public static ConsoleBuffer directBuffer = (ConsoleBuffer)MAGIC.cast2Struct(screenMemoryAddress);
 
   public static final int size = 2000;
   public static final int width = 80;
@@ -10,6 +10,31 @@ public class Console {
 
   public static int cursorIndex = 0;
   public static int indent = 0;
+
+  public static ConsoleSwitchBuffer switchBuffer = null;
+
+  public static void switchBufferTo(ConsoleSwitchBuffer newSwitchBuffer) {
+    if (switchBuffer != null) {
+      switchBuffer.cursorIndex = cursorIndex;
+      switchBuffer.indent = indent;
+    }
+
+    switchBuffer = newSwitchBuffer;
+
+    // ConsoleBufferPixel p = newSwitchBuffer.at(0);
+    // Console.printHex(MAGIC.cast2Ref(p), (byte)7);
+    printBuffer(newSwitchBuffer);
+
+    cursorIndex = switchBuffer.cursorIndex;
+    indent = switchBuffer.indent;
+  }
+
+  public static void printBuffer(ConsoleSwitchBuffer switchBuffer) {
+    for (int i = 0; i < Console.size; i++) {
+      directBuffer.pixels[i].color = switchBuffer.at(i).color;
+      directBuffer.pixels[i].symbol = switchBuffer.at(i).symbol;
+    }
+  }
 
   public static void print(String str, byte color) {
     for (int i = 0; i < str.length(); i++) {
@@ -24,19 +49,7 @@ public class Console {
   }
 
   public static void print(char c) {
-    if (c == '\n') {
-      linefeed();
-      return;
-    }
-    if (c == '\b') {
-      backspace();
-      return;
-    }
-
-
-    buffer.pixels[cursorIndex++].symbol = (byte)c;
-
-    cursorIndex %= size; // wrap around
+    print(c, (byte)-1);
   }
 
   public static void print(char c, byte color) {
@@ -49,8 +62,17 @@ public class Console {
       return;
     }
 
-    buffer.pixels[cursorIndex].color = color;
-    buffer.pixels[cursorIndex++].symbol = (byte)c;
+    directBuffer.pixels[cursorIndex].symbol = (byte)c;
+    if (switchBuffer != null)
+      switchBuffer.at(cursorIndex).symbol = (byte)c;
+
+    if (color != -1) {
+      directBuffer.pixels[cursorIndex].color = color;
+      if (switchBuffer != null)
+        switchBuffer.at(cursorIndex).color = color;
+    }
+
+    cursorIndex++;
 
     cursorIndex %= size; // wrap around
   }

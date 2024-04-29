@@ -6,15 +6,15 @@ import kernel.ErrorCode;
 import kernel.io.console.Console;
 
 // Either use GarbageCollectingInstanceCreator or NaiveInstanceCreator
-import rte.instancing.GarbageCollectingInstanceCreator;
+import rte.instancing.NaiveInstanceCreator;
 
 public class DynamicRuntime {
   public static void init() {
-    GarbageCollectingInstanceCreator.init(); 
+    NaiveInstanceCreator.init(); 
   }
 
   public static Object newInstance(int scalarSize, int relocEntries, SClassDesc type) {
-    return GarbageCollectingInstanceCreator.newInstance(scalarSize, relocEntries, type);
+    return NaiveInstanceCreator.newInstance(scalarSize, relocEntries, type);
   }
 
   // this method was provided

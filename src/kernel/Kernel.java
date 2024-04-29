@@ -47,6 +47,26 @@ public class Kernel {
     Timer.delay(1000);
     Console.clear();
 
+    ConsoleSwitchBuffer switchBufferA = new ConsoleSwitchBuffer();
+    Console.switchBufferTo(switchBufferA);
+    Console.print("I am writing on A");
+
+    Timer.delay(1000);
+
+    ConsoleSwitchBuffer switchBufferB = new ConsoleSwitchBuffer();
+    Console.switchBufferTo(switchBufferB);
+    Console.print("Here is something written on Buffer B\nHey!");
+
+    Timer.delay(1000);
+
+    Console.switchBufferTo(switchBufferA);
+
+    Timer.delay(1000);
+
+    Console.switchBufferTo(switchBufferB);
+
+    Timer.delay(1000);
+
     // BIOS.switchToGraphicsMode();
     // Graphics.drawRect(0, 0, 20, 20, (byte)0x20);
     // Graphics.render();

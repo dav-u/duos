@@ -6,7 +6,8 @@ import kernel.io.keyboard.KeyEvent;
 import kernel.io.keyboard.KeyboardShortcutInterpreter;
 
 public class BaseTask extends Task {
-  KeyboardShortcutInterpreter keyboardShortcutInterpreter;
+  private KeyboardShortcutInterpreter keyboardShortcutInterpreter;
+
   public BaseTask() {
     keyboardShortcutInterpreter = new KeyboardShortcutInterpreter();
     BreakpointShortcut breakpointShortcut = new BreakpointShortcut();

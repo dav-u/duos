@@ -35,7 +35,7 @@ public class ConsoleWriterTests {
       writer.print('B');
     }
 
-    return Console.buffer.pixels[0].symbol == 'B';
+    return Console.directBuffer.pixels[0].symbol == 'B';
   }
 
   public boolean testInteger() {
@@ -64,7 +64,7 @@ public class ConsoleWriterTests {
 
   private boolean checkScreenTextAt(int cursorIndex, String expectedString) {
     for (int i = 0; i < expectedString.length(); i++) {
-      if (Console.buffer.pixels[cursorIndex + i].symbol != expectedString.charAt(i))
+      if (Console.directBuffer.pixels[cursorIndex + i].symbol != expectedString.charAt(i))
         return false;
     }
 
