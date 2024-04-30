@@ -7,6 +7,7 @@ import kernel.io.keyboard.*;
 import kernel.io.Graphics;
 import kernel.time.Timer;
 import kernel.bios.*;
+import kernel.hardware.PcSpeaker;
 import kernel.hardware.PCI;
 import kernel.hardware.RTC;
 import kernel.hardware.vesa.VESAGraphics;
@@ -74,6 +75,13 @@ public class Kernel {
     TaskRegistration.registerUserTasks(scheduler);
 
     // scheduler.printTasks();
+    PcSpeaker.playSound(440);
+    Timer.delay(200);
+    PcSpeaker.playSound(880);
+    Timer.delay(200);
+    PcSpeaker.playSound(1000);
+    Timer.delay(200);
+    PcSpeaker.stop();
 
     while (isRunning) {
       scheduler.run();

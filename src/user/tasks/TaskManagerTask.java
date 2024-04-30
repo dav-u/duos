@@ -4,6 +4,7 @@ import kernel.scheduler.Scheduler;
 import kernel.scheduler.Task;
 import kernel.scheduler.UiTask;
 import kernel.io.keyboard.*;
+import kernel.io.console.*;
 
 public class TaskManagerTask extends Task {
   private Scheduler scheduler;
@@ -23,15 +24,8 @@ public class TaskManagerTask extends Task {
     return "TaskManager";
   }
 
-  /*
-   * Returns false if it wants to quit.
-   */
-  @Override
-  public boolean run() {
-    return true;
-  }
-
   public void addTask(UiTask task) {
+    scheduler.addTask(task);
     tasks[taskCount++] = task;
   }
 

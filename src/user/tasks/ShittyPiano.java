@@ -6,15 +6,20 @@ import kernel.io.console.Console;
 import kernel.io.console.ConsoleSwitchBuffer;
 import kernel.io.keyboard.KeyEvent;
 
-public class PrintPciTask extends TextUiTask {
+public class ShittyPiano extends TextUiTask {
   @Override
   public String getName() {
-    return "PrintPci";
+    return "ShittyPiano (PC Speaker)";
   }
 
   @Override
   public void onActivate() {
     Console.clear();
     PCI.printDevices();
+  }
+
+  @Override
+  protected boolean handleKeyEventInternal(KeyEvent event) {
+    return false;
   }
 }

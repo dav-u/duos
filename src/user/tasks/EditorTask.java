@@ -28,12 +28,4 @@ public class EditorTask extends TextUiTask {
 
     return true;
   }
-
-  /*
-   * Returns false if it wants to quit.
-   */
-  @Override
-  public boolean run() {
-    return true;
-  }
 }

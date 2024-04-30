@@ -18,12 +18,12 @@ public class TaskRegistration {
     PrintMemoryMapTask printMemoryMapTask = new PrintMemoryMapTask();
     printMemoryMapTask.priority = 5;
 
+    scheduler.addTask(taskManagerTask);
+
     taskManagerTask.addTask(editorTask);
     taskManagerTask.addTask(printPciTask);
     taskManagerTask.addTask(printMemoryMapTask);
 
-    scheduler.addTask(taskManagerTask);
-    scheduler.addTask(editorTask);
     Console.print("Use the F-Keys to choose a task");
   }
 }

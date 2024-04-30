@@ -9,6 +9,7 @@ public abstract class TextUiTask extends UiTask {
 
   @Override
   public void onActivate() {
+    Console.print(switchBuffer.cursorIndex);
     Console.switchBufferTo(switchBuffer);
   }
 }

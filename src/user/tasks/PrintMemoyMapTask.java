@@ -19,9 +19,4 @@ public class PrintMemoryMapTask extends TextUiTask {
     Console.clear();
     SystemMemoryMap.printSystemMemoryMap();
   }
-  
-  @Override
-  public boolean run() {
-    return true;
-  }
 }
