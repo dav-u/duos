@@ -8,6 +8,8 @@ import kernel.io.Graphics;
 import kernel.time.Timer;
 import kernel.bios.*;
 import kernel.hardware.PCI;
+import kernel.hardware.vesa.VESAGraphics;
+import kernel.hardware.vesa.VESAMode;
 import kernel.scheduler.*;
 import rte.DynamicRuntime;
 import user.tasks.TaskRegistration;
@@ -40,6 +42,16 @@ public class Kernel {
     Interrupts.setInterruptFlag();
     Console.print("Enabled hardware interrupts\n");
 
+    VESAGraphics vesaGraphics = VESAGraphics.detectDevice();
+    vesaGraphics.setMode(1920, 1080, 32, true);
+
+    int[] col = new int[1920];
+    for (int i = 0; i < 1920; i++) {
+      col[i] = 0xFFFFFFFF;
+    }
+
+    vesaGraphics.drawLine(2, col);
+    while(true);
     Timer.delay(1000);
 
     Console.clear();

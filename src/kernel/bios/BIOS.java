@@ -1,16 +1,9 @@
 package kernel.bios;
 
 import kernel.interrupt.Interrupts;
+import kernel.Memory;
 
 public class BIOS {
-  private final static int BIOS_MEMORY = 0x60000;
-  private final static int BIOS_STKEND = BIOS_MEMORY+0x1000;
-  private final static int BIOS_STKBSE = BIOS_STKEND-0x28;
-
-  // Put system memory map buffer before bios memory.
-  // Needs to be below 1MB.
-  public final static int BIOS_MEMMAP_START = BIOS_MEMORY - 32;
-
   public final static int CF_MASK = 0x0001;
 
   public static class BIOSRegs extends STRUCT {
@@ -18,7 +11,7 @@ public class BIOS {
     public int EDI, ESI, EBP, ESP, EBX, EDX, ECX, EAX;
   }
   
-  public final static BIOSRegs regs = (BIOSRegs)MAGIC.cast2Struct(BIOS_STKBSE);
+  public final static BIOSRegs regs = (BIOSRegs)MAGIC.cast2Struct(Memory.BIOS_STKBSE);
   
   public final static short F_CARRY  = 0x0001;
   public final static short F_PARITY = 0x0004;
@@ -34,12 +27,12 @@ public class BIOS {
   
   //-------------------------------------------------------- call BIOS-IRQ ------------------------------------
   public static void rint(int inter) {
-    int addr=BIOS_MEMORY+8;
+    int addr=Memory.BIOS_MEMORY+8;
     
     if (!initDone) { //initialize 16 bit code
       MAGIC.wMem8(addr++, (byte)0x66);
       MAGIC.wMem8(addr++, (byte)0xBB);
-      MAGIC.wMem32(addr, BIOS_MEMORY); //mov ebx,0x60000(BIOS_MEMORY)
+      MAGIC.wMem32(addr, Memory.BIOS_MEMORY); //mov ebx,0x60000(BIOS_MEMORY)
       addr+=4;
       
       MAGIC.wMem8(addr++, (byte)0x67);
@@ -71,11 +64,11 @@ public class BIOS {
       MAGIC.wMem8(addr++, (byte)0xEA);
       MAGIC.wMem8(addr++, (byte)0x28);
       MAGIC.wMem8(addr++, (byte)0x00);
-      MAGIC.wMem16(addr, (short)(BIOS_MEMORY>>>4)); //jmp 0x6000(BIOS_MEMORY>>>4):0028
+      MAGIC.wMem16(addr, (short)(Memory.BIOS_MEMORY>>>4)); //jmp 0x6000(BIOS_MEMORY>>>4):0028
       addr+=2;
           
       MAGIC.wMem8(addr++, (byte)0xBA);
-      MAGIC.wMem16(addr, (short)(BIOS_MEMORY>>>4)); //mov dx,0x6000(BIOS_MEMORY>>>4)
+      MAGIC.wMem16(addr, (short)(Memory.BIOS_MEMORY>>>4)); //mov dx,0x6000(BIOS_MEMORY>>>4)
       addr+=2;
       
       MAGIC.wMem8(addr++, (byte)0x8E);
@@ -86,7 +79,7 @@ public class BIOS {
       
       MAGIC.wMem8(addr++, (byte)0x66);
       MAGIC.wMem8(addr++, (byte)0xBC);
-      MAGIC.wMem32(addr, BIOS_STKBSE-BIOS_MEMORY); //mov esp,0x2000(BIOS_MEMORY-BIOS_STKBSE)
+      MAGIC.wMem32(addr, Memory.BIOS_STKBSE-Memory.BIOS_MEMORY); //mov esp,0x2000(BIOS_MEMORY-BIOS_STKBSE)
       addr+=4;
       
       MAGIC.wMem8(addr++, (byte)0x1F); //pop ds
@@ -153,7 +146,7 @@ public class BIOS {
           
       MAGIC.wMem8(addr++, (byte)0x66);
       MAGIC.wMem8(addr++, (byte)0xB8);
-      MAGIC.wMem32(addr, BIOS_MEMORY); //mov eax, BIOS_MEMORY
+      MAGIC.wMem32(addr, Memory.BIOS_MEMORY); //mov eax, BIOS_MEMORY
       addr+=4;
           
       MAGIC.wMem8(addr++, (byte)0x66);
@@ -168,7 +161,7 @@ public class BIOS {
     }
     
     //real function after initialization
-    MAGIC.wMem8(BIOS_MEMORY+61, (byte)inter); //set interrupt number
+    MAGIC.wMem8(Memory.BIOS_MEMORY+61, (byte)inter); //set interrupt number
     MAGIC.inline(0x9C); //pushf
     MAGIC.inline(0xFA); //cli
 

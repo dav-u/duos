@@ -131,6 +131,10 @@ public class Console {
     printHex((int)(x & mask), color);
   }
 
+  public static void print(long x) {
+    print(x, (byte)-1);
+  }
+
   public static void print(long x, byte color) {
     // this is not a very efficient solution but it works
 

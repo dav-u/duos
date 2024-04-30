@@ -97,7 +97,7 @@ public class SystemMemoryMap {
     continuation = BIOS.regs.EBX;
 
     SystemMemoryMapAddressRangeDescriptor descriptor =
-      (SystemMemoryMapAddressRangeDescriptor)MAGIC.cast2Struct(BIOS.BIOS_MEMMAP_START);
+      (SystemMemoryMapAddressRangeDescriptor)MAGIC.cast2Struct(Memory.BIOS_MEMMAP_START);
     
     return descriptor;
   }
@@ -112,8 +112,8 @@ public class SystemMemoryMap {
     +   C A F E -> >>> 4
       B C A D E
     */
-    BIOS.regs.EDI = BIOS.BIOS_MEMMAP_START & 0xF;
-    BIOS.regs.ES = (short)(BIOS.BIOS_MEMMAP_START >>> 4);
+    BIOS.regs.EDI = Memory.BIOS_MEMMAP_START & 0xF;
+    BIOS.regs.ES = (short)(Memory.BIOS_MEMMAP_START >>> 4);
 
     BIOS.regs.ECX = size; // size in bytes
 
