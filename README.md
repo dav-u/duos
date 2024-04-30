@@ -1,5 +1,13 @@
 # DUOS
 
+## Usage
+
+### System Shortcuts
+
+- To shut down the system use `Ctrl`+`Shift`+`Alt`+`S`
+- To issue a breakpoint interrupt use `Ctrl`+`Alt`+`B`
+  - The breakpoint interrupt triggers the bluescreen displaying a stacktrace and the register values
+
 ## Build and Run
 
 ```bash
