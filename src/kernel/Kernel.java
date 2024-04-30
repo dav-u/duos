@@ -8,6 +8,7 @@ import kernel.io.Graphics;
 import kernel.time.Timer;
 import kernel.bios.*;
 import kernel.hardware.PCI;
+import kernel.hardware.RTC;
 import kernel.hardware.vesa.VESAGraphics;
 import kernel.hardware.vesa.VESAMode;
 import kernel.scheduler.*;
@@ -76,6 +77,7 @@ public class Kernel {
 
     while (isRunning) {
       scheduler.run();
+      printTime();
     }
 
     sendAcpiShutdown();
@@ -139,40 +141,40 @@ public class Kernel {
     while(true);
   }
 
-public static int HSBtoRGB(float hue, float saturation, float brightness) {
+  public static int HSBtoRGB(float hue, float saturation, float brightness) {
     int rgb = 0;
     if (saturation == 0) {
-        int value = (int) (brightness * 255.0f + 0.5f);
-        rgb = (value << 16) | (value << 8) | value;
+      int value = (int) (brightness * 255.0f + 0.5f);
+      rgb = (value << 16) | (value << 8) | value;
     } else {
-        float h = (hue - (float) Math.floor(hue)) * 6.0f;
-        float f = h - (float) Math.floor(h);
-        float p = brightness * (1.0f - saturation);
-        float q = brightness * (1.0f - saturation * f);
-        float t = brightness * (1.0f - (saturation * (1.0f - f)));
-        switch ((int) h) {
-            case 0:
-                rgb = ((int) (brightness * 255.0f + 0.5f) << 16) | ((int) (t * 255.0f + 0.5f) << 8) | (int) (p * 255.0f + 0.5f);
-                break;
-            case 1:
-                rgb = ((int) (q * 255.0f + 0.5f) << 16) | ((int) (brightness * 255.0f + 0.5f) << 8) | (int) (p * 255.0f + 0.5f);
-                break;
-            case 2:
-                rgb = ((int) (p * 255.0f + 0.5f) << 16) | ((int) (brightness * 255.0f + 0.5f) << 8) | (int) (t * 255.0f + 0.5f);
-                break;
-            case 3:
-                rgb = ((int) (p * 255.0f + 0.5f) << 16) | ((int) (q * 255.0f + 0.5f) << 8) | (int) (brightness * 255.0f + 0.5f);
-                break;
-            case 4:
-                rgb = ((int) (t * 255.0f + 0.5f) << 16) | ((int) (p * 255.0f + 0.5f) << 8) | (int) (brightness * 255.0f + 0.5f);
-                break;
-            case 5:
-                rgb = ((int) (brightness * 255.0f + 0.5f) << 16) | ((int) (p * 255.0f + 0.5f) << 8) | (int) (q * 255.0f + 0.5f);
-                break;
-        }
+      float h = (hue - (float) Math.floor(hue)) * 6.0f;
+      float f = h - (float) Math.floor(h);
+      float p = brightness * (1.0f - saturation);
+      float q = brightness * (1.0f - saturation * f);
+      float t = brightness * (1.0f - (saturation * (1.0f - f)));
+      switch ((int) h) {
+        case 0:
+          rgb = ((int) (brightness * 255.0f + 0.5f) << 16) | ((int) (t * 255.0f + 0.5f) << 8) | (int) (p * 255.0f + 0.5f);
+          break;
+        case 1:
+          rgb = ((int) (q * 255.0f + 0.5f) << 16) | ((int) (brightness * 255.0f + 0.5f) << 8) | (int) (p * 255.0f + 0.5f);
+          break;
+        case 2:
+          rgb = ((int) (p * 255.0f + 0.5f) << 16) | ((int) (brightness * 255.0f + 0.5f) << 8) | (int) (t * 255.0f + 0.5f);
+          break;
+        case 3:
+          rgb = ((int) (p * 255.0f + 0.5f) << 16) | ((int) (q * 255.0f + 0.5f) << 8) | (int) (brightness * 255.0f + 0.5f);
+          break;
+        case 4:
+          rgb = ((int) (t * 255.0f + 0.5f) << 16) | ((int) (p * 255.0f + 0.5f) << 8) | (int) (brightness * 255.0f + 0.5f);
+          break;
+        case 5:
+          rgb = ((int) (brightness * 255.0f + 0.5f) << 16) | ((int) (p * 255.0f + 0.5f) << 8) | (int) (q * 255.0f + 0.5f);
+          break;
+      }
     }
     return rgb;
-}
+  }
 
   public static void panic(int errorCode, String message) {
     Console.cursorIndex = 0;
@@ -292,5 +294,32 @@ public static int HSBtoRGB(float hue, float saturation, float brightness) {
    */
   private static void sendAcpiShutdown() {
     MAGIC.wIOs16(0x604, (short)0x2000);
+  }
+
+  private static void printTime() {
+    int prevCursorIndex = Console.cursorIndex;
+    Console.cursorIndex = Console.size - 17;
+
+    RTC.update();
+    if (RTC.day < 10) Console.print('0');
+    Console.print(RTC.day);
+    Console.print('.');
+    if (RTC.month < 10) Console.print('0');
+    Console.print(RTC.month);
+    Console.print('.');
+    Console.print(RTC.year);
+    Console.print(' ');
+
+    // just assume GMT+2 for now :D
+    if (RTC.hour+2 < 10) Console.print('0');
+    Console.print(RTC.hour + 2);
+    Console.print(':');
+    if (RTC.minute < 10) Console.print('0');
+    Console.print(RTC.minute);
+    Console.print(':');
+    if (RTC.second < 10) Console.print('0');
+    Console.print(RTC.second);
+
+    Console.cursorIndex = prevCursorIndex;
   }
 }
