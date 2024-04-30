@@ -5,11 +5,10 @@ import kernel.io.console.ConsoleSwitchBuffer;
 import kernel.io.keyboard.KeyEvent;
 
 public abstract class TextUiTask extends UiTask {
-  private ConsoleSwitchBuffer switchBuffer = new ConsoleSwitchBuffer();
+  protected ConsoleSwitchBuffer switchBuffer = new ConsoleSwitchBuffer();
 
   @Override
   public void onActivate() {
-    Console.print(switchBuffer.cursorIndex);
     Console.switchBufferTo(switchBuffer);
   }
 }

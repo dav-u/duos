@@ -14,6 +14,7 @@ public class PrintPciTask extends TextUiTask {
 
   @Override
   public void onActivate() {
+    super.onActivate();
     Console.clear();
     PCI.printDevices();
   }

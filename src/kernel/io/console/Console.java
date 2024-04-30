@@ -21,8 +21,6 @@ public class Console {
 
     switchBuffer = newSwitchBuffer;
 
-    // ConsoleBufferPixel p = newSwitchBuffer.at(0);
-    // Console.printHex(MAGIC.cast2Ref(p), (byte)7);
     printBuffer(newSwitchBuffer);
 
     cursorIndex = switchBuffer.cursorIndex;

@@ -16,6 +16,7 @@ public class PrintMemoryMapTask extends TextUiTask {
 
   @Override
   public void onActivate() {
+    super.onActivate();
     Console.clear();
     SystemMemoryMap.printSystemMemoryMap();
   }
