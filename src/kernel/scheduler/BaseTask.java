@@ -1,6 +1,7 @@
 package kernel.scheduler;
 
-import kernel.BreakpointShortcut;
+import kernel.shortcuts.BreakpointShortcut;
+import kernel.shortcuts.ShutdownShortcut;
 import kernel.io.console.Console;
 import kernel.io.keyboard.KeyEvent;
 import kernel.io.keyboard.KeyboardShortcutInterpreter;
@@ -10,8 +11,9 @@ public class BaseTask extends Task {
 
   public BaseTask() {
     keyboardShortcutInterpreter = new KeyboardShortcutInterpreter();
-    BreakpointShortcut breakpointShortcut = new BreakpointShortcut();
-    keyboardShortcutInterpreter.addShortcut(breakpointShortcut);
+
+    keyboardShortcutInterpreter.addShortcut(new BreakpointShortcut());
+    keyboardShortcutInterpreter.addShortcut(new ShutdownShortcut());
   }
 
   @Override

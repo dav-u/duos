@@ -24,11 +24,15 @@ public abstract class Task {
   /*
    * Returns false if it wants to quit.
    */
-  public abstract boolean run();
+  public boolean run() {
+    return true;
+  }
 
   /*
    * Returns true if it handled the event.
    * Returns false if another low priority task should handle the event (as well).
    */
-  protected abstract boolean handleKeyEventInternal(KeyEvent event);
+  protected boolean handleKeyEventInternal(KeyEvent event) {
+    return false;
+  }
 }

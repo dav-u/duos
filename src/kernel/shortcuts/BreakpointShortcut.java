@@ -1,4 +1,4 @@
-package kernel;
+package kernel.shortcuts;
 
 import kernel.io.keyboard.Shortcut;
 import kernel.io.keyboard.KeyCode;

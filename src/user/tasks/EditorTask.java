@@ -2,30 +2,16 @@ package user.tasks;
 
 import kernel.io.keyboard.KeyboardTextInterpreter;
 import kernel.io.keyboard.KeyEvent;
-import kernel.scheduler.UiTask;
+import kernel.scheduler.TextUiTask;
 import kernel.io.console.Console;
 import kernel.io.console.ConsoleSwitchBuffer;
 
-public class EditorTask extends UiTask {
-  private KeyboardTextInterpreter keyboardTextInterpreter;
-  private ConsoleSwitchBuffer switchBuffer;
-
-  public EditorTask() {
-    keyboardTextInterpreter = new KeyboardTextInterpreter();
-    switchBuffer = new ConsoleSwitchBuffer();
-  }
+public class EditorTask extends TextUiTask {
+  private KeyboardTextInterpreter keyboardTextInterpreter = new KeyboardTextInterpreter();
 
   @Override
   public String getName() {
     return "EditorTask";
-  }
-
-  @Override
-  public void display() { }
-
-  @Override
-  public void onActivate() {
-    Console.switchBufferTo(switchBuffer);
   }
   
   /*

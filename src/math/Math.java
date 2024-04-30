@@ -16,4 +16,9 @@ public class Math {
   public static long max(long a, long b) {
     return a >= b ? a : b;
   }
+
+  public static float floor(float value) {
+    int intValue = (int) value;
+    return (float)(value < intValue ? intValue - 1 : intValue);
+  }
 }

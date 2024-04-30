@@ -15,8 +15,12 @@ public class TaskRegistration {
     PrintPciTask printPciTask = new PrintPciTask();
     printPciTask.priority = 5;
 
+    PrintMemoryMapTask printMemoryMapTask = new PrintMemoryMapTask();
+    printMemoryMapTask.priority = 5;
+
     taskManagerTask.addTask(editorTask);
     taskManagerTask.addTask(printPciTask);
+    taskManagerTask.addTask(printMemoryMapTask);
 
     scheduler.addTask(taskManagerTask);
     scheduler.addTask(editorTask);

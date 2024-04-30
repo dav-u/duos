@@ -9,12 +9,13 @@ import kernel.io.keyboard.KeyEvent;
  */
 public abstract class UiTask extends Task {
   public boolean isActive;
-  public abstract void display();
-  public abstract void onActivate();
+  public void display() { }
+  public void onActivate() { }
 
   /*
    * Returns true if it handled the event.
    * Returns false if another low priority task should handle the event (as well).
+   * UiTasks are not allowed to handle key events if they are not active.
    */
   @Override
   public final boolean handleKeyEvent(KeyEvent event) {
