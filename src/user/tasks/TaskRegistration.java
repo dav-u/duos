@@ -18,11 +18,15 @@ public class TaskRegistration {
     PrintMemoryMapTask printMemoryMapTask = new PrintMemoryMapTask();
     printMemoryMapTask.priority = 5;
 
+    ShittyPiano shittyPiano = new ShittyPiano();
+    shittyPiano.priority = 5;
+
     scheduler.addTask(taskManagerTask);
 
     taskManagerTask.addTask(editorTask);
     taskManagerTask.addTask(printPciTask);
     taskManagerTask.addTask(printMemoryMapTask);
+    taskManagerTask.addTask(shittyPiano);
 
     Console.print("Use the F-Keys to choose a task");
   }
