@@ -111,10 +111,7 @@ public class PCI {
     Console.printHex((byte)baseClassCode, SymbolColor.DEFAULT);
     Console.print(")");
     Console.print("    Subclass: ");
-    Console.print(BaseClassCode.convertToString(subClassCode)); // are subclasscodes the same as baseclasscodes?
-    Console.print(" (");
     Console.printHex((byte)subClassCode, SymbolColor.DEFAULT);
-    Console.print(")");
 
     Console.print("\n\n");
   }
