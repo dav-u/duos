@@ -102,8 +102,8 @@ public class PCI {
     Console.printHex((short)deviceId, (byte)7);
     Console.print('\n');
 
-    int baseClassCode = (reg1 >>> 24) & 0xFF;
-    int subClassCode = (reg1 >>> 16) & 0xFF;
+    int baseClassCode = (reg2 >>> 24) & 0xFF;
+    int subClassCode = (reg2 >>> 16) & 0xFF;
 
     Console.print("Baseclass: ");
     Console.print(BaseClassCode.convertToString(baseClassCode));
