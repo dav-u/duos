@@ -81,8 +81,8 @@ public class PCI {
             Console.print("; Multifunction");
           }
           else {
-           Console.print("; Singlefunction");
-           function = 8;
+            Console.print("; Singlefunction");
+            function = 8;
           }
           Console.print('\n');
 
@@ -90,6 +90,19 @@ public class PCI {
         }
       }
     }
+  }
+
+  public static void enableBusMasterFor(int bus, int device, int function) {
+    int register = 1; // register with command in it
+    int address = buildAddress(bus, device, function, register);
+
+    MAGIC.wIOs32(addressPort, address);
+    int reg2 = MAGIC.rIOs32(dataPort);
+
+    reg2 |= 0x4; // set bit 2 -> enable bus master in command
+
+    MAGIC.wIOs32(addressPort, address); // not sure if this is needed again, but better safe than sorry (some IO ports behave strange...)
+    MAGIC.wIOs32(dataPort, reg2);
   }
 
   private static void printDevice(int reg0, int reg1, int reg2, int reg3) {
@@ -100,6 +113,8 @@ public class PCI {
     Console.printHex((short)vendorId, (byte)7);
     Console.print("    DeviceId: ");
     Console.printHex((short)deviceId, (byte)7);
+    Console.print("    Command: ");
+    Console.printHex((short)(reg1 & 0xFFFF), (byte)7);
     Console.print('\n');
 
     int baseClassCode = (reg2 >>> 24) & 0xFF;

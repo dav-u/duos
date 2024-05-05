@@ -8,12 +8,10 @@ import java.lang.Bits;
 
 public class GarbageCollectingInstanceCreator {
   private static Object lastObject = null;
-  private static Object firstDynamicObject = null;
+  public static Object firstDynamicObject = null;
 
   public static void init() {
-    // 16 bytes after imageBase is the address of the first object
-    int firstObjectAddress = MAGIC.rMem32(MAGIC.imageBase + 16);
-    Object firstObject = MAGIC.cast2Obj(firstObjectAddress);
+    Object firstObject = Memory.getFirstHeapObject();
 
     // walk the list to get to the last object
     lastObject = firstObject;
@@ -31,6 +29,9 @@ public class GarbageCollectingInstanceCreator {
       EmptyObject.relocEntryCount(),
       EmptyObject.classDesc());
 
+    // The created object is intentionally not linked to the previous objects.
+    // Later we consider the heap objects created by the compiler as the root set for
+    // the garbage collection and thus need a seperation.
     lastObject = firstDynamicObject = emptyObjectAsObject;
   }
 
@@ -70,7 +71,7 @@ public class GarbageCollectingInstanceCreator {
    * Creates a new instance at the specified address.
    * Does *not* set _r_next.
    */
-  private static Object newInstanceAt(
+  public static Object newInstanceAt(
     int startAddress,
     int scalarSize,
     int relocEntries,

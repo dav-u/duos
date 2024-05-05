@@ -14,6 +14,7 @@ import kernel.hardware.vesa.VESAGraphics;
 import kernel.hardware.vesa.VESAMode;
 import kernel.scheduler.*;
 import rte.DynamicRuntime;
+import rte.SClassDesc;
 import user.tasks.TaskRegistration;
 import math.Math;
 
@@ -21,6 +22,8 @@ public class Kernel {
   private static String splashText = "\n  _____  _    _  ____   _____  \n |  __ \\| |  | |/ __ \\ / ____| \n | |  | | |  | | |  | | (___   \n | |  | | |  | | |  | |\\___ \\  \n | |__| | |__| | |__| |____) | \n |_____/ \\____/ \\____/|_____/  \n                               \n";
 
   private static boolean isRunning = true;
+
+  private static Scheduler scheduler;
 
   public static void main() {
     // set ebp that is stored on this stack to zero.
@@ -36,6 +39,28 @@ public class Kernel {
 
     Interrupts.createInterruptTable();
     Console.print("Created interrupt table\n");
+
+    Console.clear();
+    SClassDesc desc = MAGIC.clssDesc("Interrupts");
+
+    // Object o = GarbageCollector.getNthReference(desc, 2);
+    // int ref1 = MAGIC.cast2Ref(o);
+    // int ref2 = MAGIC.cast2Ref(Interrupts.interruptDescriptorTable);
+
+    // Console.printHex(ref1, (byte)7);
+    // Console.print('\n');
+    // Console.printHex(ref2, (byte)7);
+
+    // Console.printHex(MAGIC.cast2Ref(ref), (byte)7);
+    // Console.print('\n');
+    // Console.printHex(MAGIC.addr(Interrupts.interruptTableMemory),(byte)7);
+    // Console.print('\n');
+    // Console.printHex(MAGIC.cast2Ref(desc),(byte)7);
+    // Console.print('\n');
+    // Console.print("Fan out: ");
+    // Console.print(GarbageCollector.fanOut(desc));
+
+    // while(true);
 
     Keyboard.init();
     Console.print("Initialized keyboard\n");
@@ -67,7 +92,7 @@ public class Kernel {
     //PCI.printDevices();
     //Timer.delay(3000);
 
-    Scheduler scheduler = new Scheduler();
+    scheduler = new Scheduler();
     BaseTask baseTask = new BaseTask();
     baseTask.priority = 1;
     scheduler.addTask(baseTask);
@@ -75,17 +100,11 @@ public class Kernel {
     TaskRegistration.registerUserTasks(scheduler);
 
     // scheduler.printTasks();
-    PcSpeaker.playSound(440);
-    Timer.delay(200);
-    PcSpeaker.playSound(880);
-    Timer.delay(200);
-    PcSpeaker.playSound(1000);
-    Timer.delay(200);
-    PcSpeaker.stop();
 
     while (isRunning) {
       scheduler.run();
       printTime();
+      GarbageCollector.run();
     }
 
     sendAcpiShutdown();

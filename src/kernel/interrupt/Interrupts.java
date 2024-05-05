@@ -21,7 +21,8 @@ public class Interrupts {
   /*
    * Reference to the interrupt table memory so it does not get garbage collected.
   */
-  private static long[] interruptTableMemory;
+  // TODO make private again
+  public static long[] interruptTableMemory;
 
   public static InterruptDescriptorTable interruptDescriptorTable;
 
