@@ -122,6 +122,13 @@ public class Console {
     printHex((short)(x & mask), color);
   }
 
+  public static void printHex(int x) {
+    int mask = 0xFFFF;
+
+    printHex((short)(x >>> 16), (byte)-1);
+    printHex((short)(x & mask), (byte)-1);
+  }
+
   public static void printHex(long x, byte color) {
     long mask = 0xFFFFFFFFL;
 

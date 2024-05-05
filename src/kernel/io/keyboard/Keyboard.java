@@ -15,6 +15,9 @@ public class Keyboard {
 
   private static boolean[] pressState;
   private static boolean[] e0PressState;
+
+  private static boolean waitingOnKeyPress = false;
+  private static int keyCodeWaitingOn = 0;
   
   public static void init() {
     keyMap = KeyMap.greateGermanKeymap();
@@ -25,7 +28,7 @@ public class Keyboard {
 
   /*
    * Inspired by http://www.lowlevel.eu/wiki/Keyboard_Controller.
-  */
+   */
   public static void readIoBuffer() {
     int code = MAGIC.rIOs8(0x60);
     code &= 0xFF;
@@ -88,18 +91,24 @@ public class Keyboard {
     }
   }
 
+  /*
+   * Pauses execution until the specified key is pressed down.
+   * Useful for debugging.
+   */
+  public static void waitFor(int keyCode) {
+    keyCodeWaitingOn = keyCode;
+    waitingOnKeyPress = true;
+    while (waitingOnKeyPress);
+  }
+
   private static void keyUp(Key key) {
     keyBuffer.appendEvent(key, KeyEvent.Up);
-    // Console.print("UP: ");
-    // Console.print(key.name);
-    // Console.print('\n');
   }
 
   private static void keyDown(Key key) {
+    if (key.code == keyCodeWaitingOn) waitingOnKeyPress = false;
+
     keyBuffer.appendEvent(key, KeyEvent.Down);
-    // Console.print("DOWN: ");
-    // Console.print(key.name);
-    // Console.print('\n');
   }
 
   private static void keyPress(Key key) {

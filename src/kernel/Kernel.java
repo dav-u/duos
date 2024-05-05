@@ -15,6 +15,7 @@ import kernel.hardware.vesa.VESAMode;
 import kernel.scheduler.*;
 import rte.DynamicRuntime;
 import rte.SClassDesc;
+import rte.instancing.GarbageCollectingInstanceCreator;
 import user.tasks.TaskRegistration;
 import math.Math;
 
@@ -40,28 +41,6 @@ public class Kernel {
     Interrupts.createInterruptTable();
     Console.print("Created interrupt table\n");
 
-    Console.clear();
-    SClassDesc desc = MAGIC.clssDesc("Interrupts");
-
-    // Object o = GarbageCollector.getNthReference(desc, 2);
-    // int ref1 = MAGIC.cast2Ref(o);
-    // int ref2 = MAGIC.cast2Ref(Interrupts.interruptDescriptorTable);
-
-    // Console.printHex(ref1, (byte)7);
-    // Console.print('\n');
-    // Console.printHex(ref2, (byte)7);
-
-    // Console.printHex(MAGIC.cast2Ref(ref), (byte)7);
-    // Console.print('\n');
-    // Console.printHex(MAGIC.addr(Interrupts.interruptTableMemory),(byte)7);
-    // Console.print('\n');
-    // Console.printHex(MAGIC.cast2Ref(desc),(byte)7);
-    // Console.print('\n');
-    // Console.print("Fan out: ");
-    // Console.print(GarbageCollector.fanOut(desc));
-
-    // while(true);
-
     Keyboard.init();
     Console.print("Initialized keyboard\n");
 
@@ -78,20 +57,6 @@ public class Kernel {
     Timer.delay(1000);
     Console.clear();
 
-    // BIOS.switchToGraphicsMode();
-    // Graphics.drawRect(0, 0, 20, 20, (byte)0x20);
-    // Graphics.render();
-    // Timer.delay(1000);
-    // BIOS.switchToTextMode();
-
-    // Console.clear();
-    // SystemMemoryMap.printSystemMemoryMap();
-    // Timer.delay(1000);
-    // Console.clear();
-
-    //PCI.printDevices();
-    //Timer.delay(3000);
-
     scheduler = new Scheduler();
     BaseTask baseTask = new BaseTask();
     baseTask.priority = 1;
@@ -101,9 +66,20 @@ public class Kernel {
 
     // scheduler.printTasks();
 
+
     while (isRunning) {
       scheduler.run();
       printTime();
+    // Object current = GarbageCollectingInstanceCreator.firstDynamicObject;
+    // while (current != null) {
+    //   current = current._r_next;
+    //   int addr = MAGIC.cast2Ref(current);
+    //   if (addr < 100) {
+    //     Console.print("Found the culprit\n");
+    //     Console.printHex(addr);
+    //     while(true);
+    //   }
+    // }
       GarbageCollector.run();
     }
 
@@ -124,7 +100,6 @@ public class Kernel {
 
     int[][] display = new int[1080][1920];
 
-    // TODO: draw mandelbrot set with display[y][x] = pixel
     // Define the region of the complex plane to visualize
     double xmin = -2.0;
     double xmax = 2.0;
