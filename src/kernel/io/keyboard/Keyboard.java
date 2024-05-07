@@ -8,7 +8,7 @@ public class Keyboard {
 
   public static KeyBuffer keyBuffer;
 
-  private static KeyMap keyMap;
+  public static KeyMap keyMap;
 
   private static boolean e0 = false;
   private static int e1IgnoreCount = 0;

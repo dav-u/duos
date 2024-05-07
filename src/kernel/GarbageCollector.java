@@ -13,7 +13,7 @@ import kernel.scheduler.Scheduler;
  * Does a mark and sweep over all objects in the heap.
  */
 public class GarbageCollector {
-  public static int unmarkedFlag = 0;
+  public static final int markedFlag = 0x1;
 
   public static void run() {
     //Interrupts.preventPicInterrupts();
@@ -21,23 +21,32 @@ public class GarbageCollector {
     Object firstDynamicObject = GarbageCollectingInstanceCreator.firstDynamicObject;
     Object rootObject = Memory.getFirstHeapObject();
 
+    resetMarkFrom(rootObject);
+    resetMarkFrom(firstDynamicObject);
+
     while (rootObject != null) {
       markObjectAndReferencedObjects(rootObject);
       rootObject = rootObject._r_next;
     }
 
-    //Kernel.checkDynamicObjects("After GC.mark");
+    Keyboard.keyMap.printKeyGCFlags();
+
+    Kernel.checkDynamicObjects("After GC.mark");
 
     sweepFrom(firstDynamicObject);
 
     Kernel.checkDynamicObjects("After GC.sweep");
     // fuseEmptyObjectsFrom(firstDynamicObject);
 
-    // switch marked and unmarked
-    if (unmarkedFlag == 0) unmarkedFlag = 1;
-    else unmarkedFlag = 0;
-
     //Interrupts.restorePicInterrupts();
+  }
+
+  private static void resetMarkFrom(Object start) {
+    Object current = start;
+    while (current != null) {
+      unmark(current);
+      current = current._r_next;
+    }
   }
 
   /*
@@ -72,6 +81,8 @@ public class GarbageCollector {
       Console.print(count);
 
       EmptyObject emptyObject = EmptyObject.createIn(startAddress, endAddress);
+
+      Keyboard.keyMap.printKeyGCFlags();
 
       // Kernel.checkDynamicObjects("after EmptyObject.createIn");
 
@@ -112,6 +123,7 @@ public class GarbageCollector {
   }
 
   private static void markObjectAndReferencedObjects(Object object) {
+    if (!(object instanceof Object)) return;
     if (isMarked(object)) return;
 
     mark(object);
@@ -136,12 +148,15 @@ public class GarbageCollector {
   }
 
   private static boolean isMarked(Object object) {
-    return (object.flags & 0x1) != unmarkedFlag;
+    return (object.flags & markedFlag) != 0;
   }
 
   private static void mark(Object object) {
-    int markedFlag = 1 - unmarkedFlag;
-    object.flags = (object.flags & ~1) | markedFlag;
+    object.flags = (object.flags & ~markedFlag) | markedFlag;
+  }
+
+  private static void unmark(Object object) {
+    object.flags = (object.flags & ~markedFlag);
   }
 
   /*

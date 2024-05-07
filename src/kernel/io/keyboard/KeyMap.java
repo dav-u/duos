@@ -107,6 +107,28 @@ public class KeyMap {
       : map[code];
   }
 
+  public void printKeyGCFlags() {
+    for (int i = 0; i < Keyboard.keyCount; i++) {
+      Key k = map[i];
+      if (k == null) continue;
+
+      if (k.flags == 0)
+        Console.print("0 ");
+      else if (k.flags == 1)
+        Console.print("1 ");
+    }
+
+    for (int i = 0; i < Keyboard.keyCount; i++) {
+      Key k = e0Map[i];
+      if (k == null) continue;
+
+      if (k.flags == 0)
+        Console.print("0 ");
+      else if (k.flags == 1)
+        Console.print("1 ");
+    }
+  }
+
   public void print() {
     for (int i = 0; i < map.length; i++) {
       if (map[i] == null) continue;
