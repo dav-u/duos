@@ -66,21 +66,13 @@ public class Kernel {
 
     // scheduler.printTasks();
 
-
     while (isRunning) {
-      scheduler.run();
-      printTime();
-    // Object current = GarbageCollectingInstanceCreator.firstDynamicObject;
-    // while (current != null) {
-    //   current = current._r_next;
-    //   int addr = MAGIC.cast2Ref(current);
-    //   if (addr < 100) {
-    //     Console.print("Found the culprit\n");
-    //     Console.printHex(addr);
-    //     while(true);
-    //   }
-    // }
+      // scheduler.run();
+      // printTime();
+      checkDynamicObjects("Kernel");
+
       GarbageCollector.run();
+      Console.print("\nLoop done\n");
     }
 
     sendAcpiShutdown();
@@ -88,6 +80,36 @@ public class Kernel {
     // this should not be reached
     Console.print("Failed to shutdown");
     while(true);
+  }
+
+  public static void checkDynamicObjects(String caller) {
+    int count = 1;
+    Object current = GarbageCollectingInstanceCreator.firstDynamicObject;
+    Object last = GarbageCollectingInstanceCreator.lastObject;
+
+    Console.print("\ncheckDynamicObjects: first=");
+    Console.printHex(MAGIC.cast2Ref(current));
+    Console.print("; last=");
+    Console.printHex(MAGIC.cast2Ref(last));
+
+    Console.print("\n");
+
+    while (current != null) {
+      current = current._r_next;
+      int addr = MAGIC.cast2Ref(current);
+      if (addr < 100) {
+        Console.print("\nFound the culprit in ");
+        Console.print(caller);
+        Console.print(" ");
+        Console.printHex(addr);
+        Console.print(" at count ");
+        Console.print(count);
+        Console.print('\n');
+        Keyboard.waitFor(KeyCode.Enter);
+        break;
+      }
+      count++;
+    }
   }
 
   public static void vesa() {

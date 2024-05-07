@@ -34,18 +34,18 @@ public class EmptyObject {
    * Does not set next pointer.
    */
   public static EmptyObject createIn(int startAddress, int endAddress) {
-    Console.print("startAddress:");
-    Console.printHex(startAddress);
-    Console.print('\n');
+    // Console.print("startAddress:");
+    // Console.printHex(startAddress);
+    // Console.print('\n');
 
-    Console.print("endAddress:");
-    Console.printHex(endAddress);
-    Console.print('\n');
+    // Console.print("endAddress:");
+    // Console.printHex(endAddress);
+    // Console.print('\n');
 
     int scalarSize = endAddress - startAddress - relocEntryCount()*4;
-    Console.print("scalarSize:");
-    Console.printHex(scalarSize);
-    Console.print('\n');
+    // Console.print("scalarSize:");
+    // Console.printHex(scalarSize);
+    // Console.print('\n');
 
     if (scalarSize < 0)
       Kernel.panic(ErrorCode.OutOfMemory, "Could not create empty object in specified region. Not enough space.");

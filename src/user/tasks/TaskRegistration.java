@@ -1,7 +1,7 @@
 package user.tasks;
 
 import kernel.io.console.Console;
-
+import kernel.Test;
 import kernel.scheduler.Scheduler;
 
 public class TaskRegistration {
@@ -9,11 +9,11 @@ public class TaskRegistration {
     TaskManagerTask taskManagerTask = new TaskManagerTask(scheduler, 10);
     taskManagerTask.priority = 3;
 
-    EditorTask editorTask = new EditorTask();
-    editorTask.priority = 5;
-
     PrintPciTask printPciTask = new PrintPciTask();
     printPciTask.priority = 5;
+
+    EditorTask editorTask = new EditorTask();
+    editorTask.priority = 5;
 
     PrintMemoryMapTask printMemoryMapTask = new PrintMemoryMapTask();
     printMemoryMapTask.priority = 5;

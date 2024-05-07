@@ -1,4 +1,4 @@
 package kernel;
-class Test {
+public class Test {
   public int value;
 }

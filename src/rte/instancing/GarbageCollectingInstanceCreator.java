@@ -7,7 +7,7 @@ import kernel.ErrorCode;
 import java.lang.Bits;
 
 public class GarbageCollectingInstanceCreator {
-  private static Object lastObject = null;
+  public static Object lastObject = null;
   public static Object firstDynamicObject = null;
 
   public static void init() {

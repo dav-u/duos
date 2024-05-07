@@ -1,12 +1,13 @@
 package kernel;
 
+import kernel.interrupt.Interrupts;
 import kernel.io.console.Console;
-import kernel.io.keyboard.KeyCode;
-import kernel.io.keyboard.Keyboard;
+import kernel.io.keyboard.*;
 import rte.SClassDesc;
 import rte.instancing.EmptyObject;
 import rte.instancing.GarbageCollectingInstanceCreator;
 import kernel.time.Timer;
+import kernel.scheduler.Scheduler;
 
 /*
  * Does a mark and sweep over all objects in the heap.
@@ -15,6 +16,8 @@ public class GarbageCollector {
   public static int unmarkedFlag = 0;
 
   public static void run() {
+    //Interrupts.preventPicInterrupts();
+    //Kernel.checkDynamicObjects("Before GC.run");
     Object firstDynamicObject = GarbageCollectingInstanceCreator.firstDynamicObject;
     Object rootObject = Memory.getFirstHeapObject();
 
@@ -23,12 +26,18 @@ public class GarbageCollector {
       rootObject = rootObject._r_next;
     }
 
+    //Kernel.checkDynamicObjects("After GC.mark");
+
     sweepFrom(firstDynamicObject);
+
+    Kernel.checkDynamicObjects("After GC.sweep");
     // fuseEmptyObjectsFrom(firstDynamicObject);
 
     // switch marked and unmarked
     if (unmarkedFlag == 0) unmarkedFlag = 1;
     else unmarkedFlag = 0;
+
+    //Interrupts.restorePicInterrupts();
   }
 
   /*
@@ -38,57 +47,66 @@ public class GarbageCollector {
   private static void sweepFrom(Object object) {
     Object current = object;
     Object prev = null;
+    int count = 1;
 
     // walk through the linked list of objects starting from 'object'
     while (current != null) {
-      // current is marked or an EmptyObject, let's look at the next one
+      // if current is marked or an EmptyObject, let's look at the next one
       if (isMarked(current) || current instanceof EmptyObject) {
-        Console.print('M');
+        //Console.print('M');
         prev = current;
         current = current._r_next;
+        count++;
         continue;
       }
-      Console.print('N');
+      // Console.clear();
 
       Object nextObject = current._r_next;
 
-      Console.print("Address of current: ");
-      Console.printHex(MAGIC.cast2Ref(current));
-      Console.print('\n');
-      // object is not marked => nobody uses this object
-      Console.print("Press...");
-      Keyboard.waitFor(KeyCode.Enter);
-      
       // create emptyObject in place of unused object
       int startAddress = Memory.startAddress(current);
       int endAddress = Memory.addressAfter(current);
 
+      Kernel.checkDynamicObjects("before EmptyObject.createIn");
+      Console.print(DEBUG_getClassName(current));
+      Console.print(count);
+
       EmptyObject emptyObject = EmptyObject.createIn(startAddress, endAddress);
+
+      // Kernel.checkDynamicObjects("after EmptyObject.createIn");
 
       // link empty object into same place as the unused 
       MAGIC.assign(emptyObject._r_next, nextObject);
       MAGIC.assign(prev._r_next, (Object)emptyObject);
 
+      Console.print("\nAddress of emptyObject: ");
+      Console.printHex(MAGIC.cast2Ref(emptyObject));
+
+      Kernel.checkDynamicObjects("after EmptyObject.createIn");
+
       // emptyObject replaced current so now it must become prev
       prev = emptyObject;
       current = nextObject;
 
-      // Object cur = GarbageCollectingInstanceCreator.firstDynamicObject;
-      // while (cur != null) {
-      //   cur = cur._r_next;
-      //   int addr = MAGIC.cast2Ref(cur);
-      //   if (addr < 100) {
-      //     Console.print("Found the culprit\n");
-      //     Console.printHex(addr);
-      //     while(true);
-      //   }
-      // }
+      Kernel.checkDynamicObjects("end of sweep loop");
+
+      count++;
     }
   }
 
+  /*
+   * Small hack to get the type of the object.
+   * RTE symbolinformation (-u rte) did sadly not fit into image.
+   */
   private static String DEBUG_getClassName(Object object) {
     if (object instanceof byte[]) return "byte[]";
     if (object instanceof long[]) return "long[]";
+    if (object instanceof Scheduler) return "Scheduler";
+    if (object instanceof Key) return "Key";
+    if (object instanceof KeyEvent) return "KeyEvent";
+    if (object instanceof EmptyObject) return "EmptyObject";
+    if (object instanceof KeyMap) return "KeyMap";
+    if (object instanceof boolean[]) return "boolean[]";
 
     else return "Unknown";
   }
