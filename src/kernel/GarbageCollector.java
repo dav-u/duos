@@ -17,7 +17,6 @@ public class GarbageCollector {
 
   public static void run() {
     //Interrupts.preventPicInterrupts();
-    //Kernel.checkDynamicObjects("Before GC.run");
     Object firstDynamicObject = GarbageCollectingInstanceCreator.firstDynamicObject;
     Object rootObject = Memory.getFirstHeapObject();
 
@@ -29,13 +28,7 @@ public class GarbageCollector {
       rootObject = rootObject._r_next;
     }
 
-    Keyboard.keyMap.printKeyGCFlags();
-
-    Kernel.checkDynamicObjects("After GC.mark");
-
     sweepFrom(firstDynamicObject);
-
-    Kernel.checkDynamicObjects("After GC.sweep");
     // fuseEmptyObjectsFrom(firstDynamicObject);
 
     //Interrupts.restorePicInterrupts();
@@ -56,19 +49,15 @@ public class GarbageCollector {
   private static void sweepFrom(Object object) {
     Object current = object;
     Object prev = null;
-    int count = 1;
 
     // walk through the linked list of objects starting from 'object'
     while (current != null) {
       // if current is marked or an EmptyObject, let's look at the next one
       if (isMarked(current) || current instanceof EmptyObject) {
-        //Console.print('M');
         prev = current;
         current = current._r_next;
-        count++;
         continue;
       }
-      // Console.clear();
 
       Object nextObject = current._r_next;
 
@@ -76,32 +65,15 @@ public class GarbageCollector {
       int startAddress = Memory.startAddress(current);
       int endAddress = Memory.addressAfter(current);
 
-      Kernel.checkDynamicObjects("before EmptyObject.createIn");
-      Console.print(DEBUG_getClassName(current));
-      Console.print(count);
-
       EmptyObject emptyObject = EmptyObject.createIn(startAddress, endAddress);
-
-      Keyboard.keyMap.printKeyGCFlags();
-
-      // Kernel.checkDynamicObjects("after EmptyObject.createIn");
 
       // link empty object into same place as the unused 
       MAGIC.assign(emptyObject._r_next, nextObject);
       MAGIC.assign(prev._r_next, (Object)emptyObject);
 
-      Console.print("\nAddress of emptyObject: ");
-      Console.printHex(MAGIC.cast2Ref(emptyObject));
-
-      Kernel.checkDynamicObjects("after EmptyObject.createIn");
-
       // emptyObject replaced current so now it must become prev
       prev = emptyObject;
       current = nextObject;
-
-      Kernel.checkDynamicObjects("end of sweep loop");
-
-      count++;
     }
   }
 
@@ -123,21 +95,12 @@ public class GarbageCollector {
   }
 
   private static void markObjectAndReferencedObjects(Object object) {
-    if (!(object instanceof Object)) return;
+    // if (!(object instanceof Object)) return;
     if (isMarked(object)) return;
 
     mark(object);
 
     int fanOut = fanOut(object);
-
-    // if (fanOut > 0) {
-    //   Console.print("Marked at ");
-    //   Console.print(MAGIC.cast2Ref(object));
-
-    //   Console.print("Fan out: ");
-    //   Console.print(fanOut);
-    //   Console.print("   ");
-    // }
 
     for (int i = 0; i < fanOut; i++) {
       Object referencedObject = getNthReference(object, i);
@@ -152,7 +115,7 @@ public class GarbageCollector {
   }
 
   private static void mark(Object object) {
-    object.flags = (object.flags & ~markedFlag) | markedFlag;
+    object.flags = object.flags | markedFlag;
   }
 
   private static void unmark(Object object) {
@@ -165,13 +128,7 @@ public class GarbageCollector {
   // TODO make private
   public static Object getNthReference(Object object, int referenceIndex) {
     int objectAddress = MAGIC.cast2Ref(object);
-    // Console.print("address:");
-    // Console.printHex(objectAddress, (byte)7);
-    // Console.print('\n');
     int referenceAddress = objectAddress - 3*4 - referenceIndex*4;
-    // Console.print("reference:");
-    // Console.printHex(referenceAddress, (byte)7);
-    // Console.print('\n');
 
     int reference = MAGIC.rMem32(referenceAddress);
 

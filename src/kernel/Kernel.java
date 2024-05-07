@@ -66,14 +66,10 @@ public class Kernel {
 
     // scheduler.printTasks();
 
-
     while (isRunning) {
-      // scheduler.run();
-      // printTime();
-      checkDynamicObjects("Kernel");
-
+      scheduler.run();
+      printTime();
       GarbageCollector.run();
-      Console.print("\nLoop done\n");
     }
 
     sendAcpiShutdown();
