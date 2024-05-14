@@ -1,6 +1,8 @@
 package user.tasks;
 
 import kernel.io.console.Console;
+import kernel.io.console.ConsoleSwitchBuffer;
+import kernel.Kernel;
 import kernel.Test;
 import kernel.scheduler.Scheduler;
 

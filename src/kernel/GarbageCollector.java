@@ -66,6 +66,7 @@ public class GarbageCollector {
       int endAddress = Memory.addressAfter(current);
 
       EmptyObject emptyObject = EmptyObject.createIn(startAddress, endAddress);
+      Kernel.checkDynamicObjects("after EmptyObject.createIn");
 
       // link empty object into same place as the unused 
       MAGIC.assign(emptyObject._r_next, nextObject);
@@ -99,6 +100,10 @@ public class GarbageCollector {
     if (isMarked(object)) return;
 
     mark(object);
+    if (object == Keyboard.keyMap) {
+      Console.print("Found keyMap in mark");
+      Keyboard.waitFor(KeyCode.Enter);
+    }
 
     int fanOut = fanOut(object);
 
