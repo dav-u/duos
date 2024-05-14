@@ -33,8 +33,6 @@ public class Kernel {
     MAGIC.inline(0x89, 0x6D); MAGIC.inlineOffset(1, ebp); //mov [ebp+xx],ebp
     MAGIC.wMem32(ebp, 0);
 
-    QemuLogger.print("Hallo Welt");
-
     // setup runtime for object allocation
     DynamicRuntime.init();
     Console.clear();
@@ -64,16 +62,13 @@ public class Kernel {
     baseTask.priority = 1;
     scheduler.addTask(baseTask);
 
-    // TaskRegistration.registerUserTasks(scheduler);
+    TaskRegistration.registerUserTasks(scheduler);
 
     // scheduler.printTasks();
 
     while (isRunning) {
       scheduler.run();
       printTime();
-      Kernel.checkDynamicObjects("before GC.run()");
-      GarbageCollector.run();
-      Kernel.checkDynamicObjects("after GC.run()");
     }
 
     sendAcpiShutdown();

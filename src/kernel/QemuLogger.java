@@ -6,8 +6,8 @@ public class QemuLogger {
   public static void printDynamicObjects() {
     Object current = GarbageCollectingInstanceCreator.firstDynamicObject;
     while (current != null) {
-      print(current.name);
-      print('\n');
+      print(current._r_type.name);
+      print("\n");
       current = current._r_next;
     }
   }
