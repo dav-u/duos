@@ -308,6 +308,8 @@ public class Kernel {
       Console.printHex(prevEip, color);
       Console.print('\n');
     }
+
+    while(true);
   }
 
   /*

@@ -1,5 +1,7 @@
 package kernel;
 
+import java.lang.Bits;
+
 public class Memory {
   public final static int StackStart = 0x9BFFC;
 
@@ -54,8 +56,8 @@ public class Memory {
     // TODO: what does read/write do for these?
     int pageDirectoryEntryLow = build4KBPageEntry(PAGE_TABLE_LOW_START, true);
     int pageDirectoryEntryHigh = build4KBPageEntry(PAGE_TABLE_HIGH_START, true);
-    MAGIC.wMem32(PAGE_DIRECTORY_START + 0, pageDirectoryEntryLow);
-    MAGIC.wMem32(PAGE_DIRECTORY_START + 1023, pageDirectoryEntryHigh);
+    MAGIC.wMem32(PAGE_DIRECTORY_START + 0 * 4, pageDirectoryEntryLow);
+    MAGIC.wMem32(PAGE_DIRECTORY_START + 1023 * 4, pageDirectoryEntryHigh);
 
     // 1024 entries, first and last one have been set ->
     // set 1 to 1022
@@ -63,35 +65,38 @@ public class Memory {
     for (int i = 1; i <= 1022; i++) {
       int address = i * fourMb;
       int pageDirectoryEntry = build4MBPageEntry(address, true);
-      MAGIC.wMem32(PAGE_DIRECTORY_START + i, pageDirectoryEntry);
+      MAGIC.wMem32(PAGE_DIRECTORY_START + i * 4, pageDirectoryEntry);
     }
 
     // now we have initialized the page directory. Next the two page tables.
 
     // not writable at address 0 (catch null pointers)
     int pageTableEntryLow = build4KBPageEntry(0, false);
+    MAGIC.wMem32(PAGE_TABLE_LOW_START + 0 * 4, pageTableEntryLow);
 
     // last page is the last 4096 bytes of 4GB.
     int lastPageAddress = fourMb * 1024 - 4096;
     int pageTableEntryHigh = build4KBPageEntry(lastPageAddress, false);
 
-    MAGIC.wMem32(PAGE_TABLE_LOW_START + 0, pageTableEntryLow);
-    MAGIC.wMem32(PAGE_TABLE_HIGH_START + 1023, pageTableEntryHigh);
+    MAGIC.wMem32(PAGE_TABLE_HIGH_START + 1023 * 4, pageTableEntryHigh);
 
     int fourKb = 1024 * 4;
     for (int i = 1; i < 1024; i++) {
       int address = i * fourKb;
-      int pageTableEntry = build4KBPageEntry(address, true);
-      MAGIC.wMem32(PAGE_TABLE_LOW_START + i, pageTableEntry);
+      boolean isWritable = true;
+      int pageTableEntry = build4KBPageEntry(address, isWritable);
+      MAGIC.wMem32(PAGE_TABLE_LOW_START + i * 4, pageTableEntry);
     }
 
     int offset = fourMb * 1023;
-    for (int i = 1; i < 1024; i++) {
+    for (int i = 0; i < 1023; i++) {
       int address = i * fourKb + offset;
-      int pageTableEntry = build4KBPageEntry(address, true);
-      MAGIC.wMem32(PAGE_TABLE_HIGH_START + i, pageTableEntry);
+      boolean isWritable = true;
+      int pageTableEntry = build4KBPageEntry(address, isWritable);
+      MAGIC.wMem32(PAGE_TABLE_HIGH_START + i * 4, pageTableEntry);
     }
 
+    enablePageSizeBit();
     setCR3(PAGE_DIRECTORY_START);
     enableMmu();
   }
@@ -103,7 +108,7 @@ public class Memory {
     
     int pageEntry = address;
 
-    // Page Size 0 -> 4KB
+    // Page Size 0 -> 4MB
     pageEntry |= 1 << 7;
     // Read/Write 0 -> readonly; 1 -> read and write
     pageEntry |= Bits.boolToBit(isWritable) << 1;
@@ -146,5 +151,11 @@ public class Memory {
   public static void setCR3(int addr) {
     MAGIC.inline(0x8B, 0x45); MAGIC.inlineOffset(1, addr); //mov eax,[ebp+8]
     MAGIC.inline(0x0F, 0x22, 0xD8); //mov cr3,eax
+  }
+
+  public static void enablePageSizeBit() {
+    MAGIC.inline(0x0F, 0x20, 0xE0); //mov eax,cr4
+    MAGIC.inline(0x83, 0xC8, 0x10); //or eax,0x00000010
+    MAGIC.inline(0x0F, 0x22, 0xE0); //mov cr4,eax
   }
 }

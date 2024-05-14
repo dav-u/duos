@@ -122,7 +122,6 @@ public class Handlers {
   */
   @SJC.Interrupt
   public static void PageFault() {
-    while(true);
     Kernel.blueScreen(true);
   }
 

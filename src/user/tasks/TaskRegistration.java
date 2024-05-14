@@ -23,12 +23,16 @@ public class TaskRegistration {
     ShittyPiano shittyPiano = new ShittyPiano();
     shittyPiano.priority = 5;
 
+    WriteToNull writeToNull = new WriteToNull();
+    writeToNull.priority = 5;
+
     scheduler.addTask(taskManagerTask);
 
     taskManagerTask.addTask(editorTask);
     taskManagerTask.addTask(printPciTask);
     taskManagerTask.addTask(printMemoryMapTask);
     taskManagerTask.addTask(shittyPiano);
+    taskManagerTask.addTask(writeToNull);
 
     Console.print("Use the F-Keys to choose a task");
   }

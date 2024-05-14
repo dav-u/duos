@@ -44,16 +44,20 @@ public class TaskManagerTask extends Task {
             scheduler.setActiveUiTask(tasks[0]);
           break;
         case KeyCode.F2:
-          if (tasks[0] != null)
+          if (tasks[1] != null)
             scheduler.setActiveUiTask(tasks[1]);
           break;
         case KeyCode.F3:
-          if (tasks[0] != null)
+          if (tasks[2] != null)
             scheduler.setActiveUiTask(tasks[2]);
           break;
         case KeyCode.F4:
-          if (tasks[0] != null)
+          if (tasks[3] != null)
             scheduler.setActiveUiTask(tasks[3]);
+          break;
+        case KeyCode.F5:
+          if (tasks[4] != null)
+            scheduler.setActiveUiTask(tasks[4]);
           break;
 
         default: return true;

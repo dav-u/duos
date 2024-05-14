@@ -1,3 +1,5 @@
+package user.tasks;
+
 import kernel.io.console.Console;
 import kernel.io.keyboard.KeyCode;
 import kernel.io.keyboard.KeyEvent;
@@ -13,7 +15,8 @@ class WriteToNull extends TextUiTask {
   public boolean handleKeyEventInternal(KeyEvent event) {
     if (event.key.code == KeyCode.Enter && event.type == KeyEvent.Down) {
       Console.print("Trying to write to null pointer...\n");
-      //MAGIC.wMem32(0, 42069);
+      // write "random" constant to 0
+      MAGIC.wMem32(0, 42069);
     }
 
     return false;
