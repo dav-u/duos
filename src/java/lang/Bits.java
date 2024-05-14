@@ -15,4 +15,11 @@ public class Bits {
 
     return tenDigit + oneDigit;
   }
+
+  /*
+   * Returns 1 for true and 0 for false.
+   */
+  public static int boolToBit(boolean bool) {
+    return bool ? 1 : 0;
+  }
 }

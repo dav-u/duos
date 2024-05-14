@@ -122,7 +122,8 @@ public class Handlers {
   */
   @SJC.Interrupt
   public static void PageFault() {
-    Console.print("Index out of range");
+    while(true);
+    Kernel.blueScreen(true);
   }
 
   @SJC.Interrupt

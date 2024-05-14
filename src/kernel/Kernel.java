@@ -49,6 +49,8 @@ public class Kernel {
     Interrupts.setInterruptFlag();
     Console.print("Enabled hardware interrupts\n");
 
+    Memory.initializeVirtualMemory();
+
     // vesa();
     Timer.delay(1000);
 
