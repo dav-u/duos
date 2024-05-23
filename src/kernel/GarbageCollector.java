@@ -65,6 +65,14 @@ public class GarbageCollector {
       int startAddress = Memory.startAddress(current);
       int endAddress = Memory.addressAfter(current);
 
+      Console.print("\nObject that is going to be deleted: ");
+      Console.print(current.getClassName());
+      Console.print(" at address: ");
+      Console.printHex(MAGIC.cast2Ref(current));
+      Console.print("\n");
+      Keyboard.keyMap.printKeyGCFlags();
+      while(true);
+
       EmptyObject emptyObject = EmptyObject.createIn(startAddress, endAddress);
       Kernel.checkDynamicObjects("after EmptyObject.createIn");
 

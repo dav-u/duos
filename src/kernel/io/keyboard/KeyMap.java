@@ -112,20 +112,24 @@ public class KeyMap {
       Key k = map[i];
       if (k == null) continue;
 
+      Console.printHex(MAGIC.cast2Ref(k));
+
       if (k.flags == 0)
-        Console.print("0 ");
+        Console.print(" 0 ");
       else if (k.flags == 1)
-        Console.print("1 ");
+        Console.print(" 1 ");
     }
 
     for (int i = 0; i < Keyboard.keyCount; i++) {
       Key k = e0Map[i];
       if (k == null) continue;
 
+      Console.printHex(MAGIC.cast2Ref(k));
+
       if (k.flags == 0)
-        Console.print("0 ");
+        Console.print(" 0 ");
       else if (k.flags == 1)
-        Console.print("1 ");
+        Console.print(" 1 ");
     }
   }
 

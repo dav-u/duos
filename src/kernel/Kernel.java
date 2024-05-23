@@ -70,6 +70,7 @@ public class Kernel {
 
     while (isRunning) {
       scheduler.run();
+      GarbageCollector.run();
       printTime();
     }
 
