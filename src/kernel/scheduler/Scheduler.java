@@ -113,5 +113,7 @@ public class Scheduler {
     for (; index < taskCount - 1; index++) {
       tasks[index] = tasks[index + 1];
     }
+
+    taskCount--;
   }
 }
