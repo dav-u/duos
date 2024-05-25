@@ -101,28 +101,6 @@ public class Kernel {
     scheduler.removeTask(scheduler.getActiveUiTask());
   }
 
-  // private static void printPackages(SPackage pkg) {
-  //   if (pkg.name != null) Console.println(pkg.name);
-  //   else Console.println("<empty>");
-
-  //   SClassDesc currentUnit = pkg.units;
-
-  //   while (currentUnit != null) {
-  //     printUnit(currentUnit);
-  //     currentUnit = currentUnit.nextUnit;
-  //   }
-
-  //   SPackage subPackage = pkg.subPacks;
-  //   while (subPackage != null) {
-  //     printPackages(subPackage);
-  //     subPackage = subPackage.nextPack;
-  //   }
-  // }
-
-  // private static void printUnit(SClassDesc classDesc) {
-  //   Console.println(classDesc.name);
-  // }
-
   public static void checkDynamicObjects(String caller) {
     int count = 1;
     Object current = GarbageCollectingInstanceCreator.firstDynamicObject;
