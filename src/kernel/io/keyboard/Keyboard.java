@@ -1,7 +1,9 @@
 package kernel.io.keyboard;
 
-import kernel.io.console.SymbolColor;
+import kernel.Kernel;
+import kernel.interrupt.Interrupts;
 import kernel.io.console.Console;
+import kernel.io.console.SymbolColor;
 
 public class Keyboard {
   public final static int keyCount = 94;
@@ -107,6 +109,7 @@ public class Keyboard {
 
   private static void keyDown(Key key) {
     if (key.code == keyCodeWaitingOn) waitingOnKeyPress = false;
+    handleSpecialShortcuts(key);
 
     keyBuffer.appendEvent(key, KeyEvent.Down);
   }
@@ -137,5 +140,18 @@ public class Keyboard {
 
   private static int clearBreakBit(int code) {
     return code & ~(1 << 7);
+  }
+
+  private static void handleSpecialShortcuts(Key key) {
+    if (key.code == KeyCode.Q) {
+      Kernel.killCurrentTask();
+
+      // before we switch back to the scheduler loop we have to acknowledge
+      // the pic master. Otherwise we do not get any keyboard inputs anymore.
+      // Usually this is done in Handlers.Keyboard(), but we never get back
+      // there after jumping to the scheduler loop.
+      Interrupts.acknowledgePicMasterInterrupt();
+      Kernel.schedulerLoop();
+    }
   }
 }

@@ -26,6 +26,9 @@ public class TaskRegistration {
     WriteToNull writeToNull = new WriteToNull();
     writeToNull.priority = 5;
 
+    UncooperativeTask uncooperativeTask = new UncooperativeTask();
+    uncooperativeTask.priority = 5;
+
     scheduler.addTask(taskManagerTask);
 
     taskManagerTask.addTask(editorTask);
@@ -33,6 +36,7 @@ public class TaskRegistration {
     taskManagerTask.addTask(printMemoryMapTask);
     taskManagerTask.addTask(shittyPiano);
     taskManagerTask.addTask(writeToNull);
+    taskManagerTask.addTask(uncooperativeTask);
 
     Console.print("Use the F-Keys to choose a task");
   }

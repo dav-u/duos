@@ -25,6 +25,7 @@ public class Kernel {
   private static String splashText = "\n  _____  _    _  ____   _____  \n |  __ \\| |  | |/ __ \\ / ____| \n | |  | | |  | | |  | | (___   \n | |  | | |  | | |  | |\\___ \\  \n | |__| | |__| | |__| |____) | \n |_____/ \\____/ \\____/|_____/  \n                               \n";
 
   private static boolean isRunning = true;
+  private static boolean savedRegisters = false;
 
   private static Scheduler scheduler;
 
@@ -69,16 +70,35 @@ public class Kernel {
 
     // scheduler.printTasks();
 
-    while (isRunning) {
-      scheduler.run();
-      printTime();
-    }
+    schedulerLoop();
 
     sendAcpiShutdown();
 
     // this should not be reached
     Console.print("Failed to shutdown");
     while(true);
+  }
+
+  public static void schedulerLoop() {
+    // this method might be jumped at by only setting the ip.
+    // to restore the stackframe we have to save the ebp and esp
+    // registers on the fist (normal) call and then...
+    if (!savedRegisters) {
+      RegisterSave.saveRegisters();
+      savedRegisters = true;
+    }
+
+    // ... restore the registers.
+    RegisterSave.restoreRegisters();
+
+    while (isRunning) {
+      scheduler.run();
+      printTime();
+    }
+  }
+
+  public static void killCurrentTask() {
+    scheduler.removeTask(scheduler.getActiveUiTask());
   }
 
   // private static void printPackages(SPackage pkg) {

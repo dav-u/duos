@@ -15,6 +15,8 @@ public class Scheduler {
   private int taskCount = 0;
   private KeyBufferReader keyBufferReader;
 
+  private int currentTaskIndex = -1;
+
   public Scheduler() {
     tasks = new Task[10];
     keyBufferReader = new KeyBufferReader(Keyboard.keyBuffer);
@@ -47,7 +49,14 @@ public class Scheduler {
 
   public void run() {
     handleKeyEvents();
-    // TODO: let tasks run
+    // runTasks(); // TODO: let tasks run
+    displayUi();
+  }
+
+  public void runTasks() {
+    for (int i = 0; i < taskCount; i++) {
+      tasks[i].run(); // TODO: handle return value
+    }
   }
 
   public void handleKeyEvents() {
@@ -64,6 +73,8 @@ public class Scheduler {
   }
 
   public void removeTask(Task task) {
+    if (task == activeUiTask) activeUiTask = null;
+
     for (int i = 0; i < taskCount; i++) {
       if (task == tasks[i]) {
         removeTaskAt(i);
@@ -92,6 +103,10 @@ public class Scheduler {
     // if we task to insert has lower priority than every other 
     // present task, just append it
     tasks[taskCount++] = task;
+  }
+
+  public UiTask getActiveUiTask() {
+    return activeUiTask;
   }
 
   private void removeTaskAt(int index) {

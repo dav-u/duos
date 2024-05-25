@@ -10,6 +10,13 @@ class WriteToNull extends TextUiTask {
   public String getName() {
     return "WriteToNull";
   }
+
+  @Override
+  public void onActivate() {
+    super.onActivate();
+    Console.clear();
+    Console.print("When pressing enter I am going to write to address null!");
+  }
   
   @Override
   public boolean handleKeyEventInternal(KeyEvent event) {
