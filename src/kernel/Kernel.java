@@ -10,6 +10,7 @@ import kernel.bios.*;
 import kernel.hardware.PcSpeaker;
 import kernel.hardware.PCI;
 import kernel.hardware.RTC;
+import kernel.hardware.ac97.AC97;
 import kernel.hardware.vesa.VESAGraphics;
 import kernel.hardware.vesa.VESAMode;
 import kernel.scheduler.*;
@@ -39,20 +40,25 @@ public class Kernel {
     // setup runtime for object allocation
     DynamicRuntime.init();
     Console.clear();
-    Console.print("Initialized dynamic runtime\n");
+    Console.println("Initialized dynamic runtime");
 
     Interrupts.createInterruptTable();
-    Console.print("Created interrupt table\n");
+    Console.println("Created interrupt table");
 
     Keyboard.init();
-    Console.print("Initialized keyboard\n");
+    Console.println("Initialized keyboard");
 
     // enable hardware interrupts
     Interrupts.initPic();
     Interrupts.setInterruptFlag();
-    Console.print("Enabled hardware interrupts\n");
+    Console.println("Enabled hardware interrupts");
 
     Memory.initializeVirtualMemory();
+    Console.println("Enabled virtual memory (detecting null pointer writes)");
+
+    if (AC97.setup())
+      Console.println("Enabled AC97");
+    else Console.println("Could not find AC97");
 
     // Timer.delay(1000);
 

@@ -3,7 +3,19 @@ package kernel.hardware;
 import kernel.io.console.Console;
 import kernel.io.console.SymbolColor;
 
+/*
+ * This class allows to read from the PCI Bus and set certain values for devices.
+ * This class implements an iterator. Call resetIterator() to start iterating.
+ */
 public class PCI {
+  public static int bus = 0;
+  public static int device = 0;
+  public static int function = 0;
+
+  private final static int busSize = 3;
+  private final static int deviceSize = 32;
+  private final static int functionSize = 8;
+
   private final static int addressPort = 0x0CF8;
   private final static int dataPort = 0x0CFC;
 
@@ -48,48 +60,75 @@ public class PCI {
     }
   }
 
+  public static int readReg(int reg) {
+    MAGIC.wIOs32(addressPort, buildAddress(bus, device, function, reg));
+    return MAGIC.rIOs32(dataPort);
+  }
+
+  public static void resetIterator() {
+    bus = 0;
+    device = 0;
+    function = -1;
+  }
+
+  /*
+   * Selects the next function (or next device or bus)
+   */
+  public static boolean next() {
+    // search for next valid device
+    do {
+      // TODO: has the device set the 0x00800000 flag only
+      // for the first function of a multi-function device?
+      // -> we currently assume it has it set for all subsequent
+      //    functions as well
+
+      // if we are not a multi-function device we need to skip to the
+      // next device. Otherwise look at the next function
+      if (function != -1 && isMultiFunctionDevice())
+        function = functionSize; // this selects the next device
+      else function++;
+
+      if (function >= functionSize) {
+        function = 0;
+        device++;
+      }
+
+      if (device >= deviceSize) {
+        device = 0;
+        bus++;
+      }
+
+      if (bus >= busSize) return false; // we stop our search after we reach busSize
+    } while(readReg(0) == 0 || readReg(0) == -1); // loop as long as no valid device is found
+
+    return true;
+  }
+
   public static void printDevices() {
     Console.print("Devices:\n");
 
-    int busSize = 3;
-    int deviceSize = 32;
-    int functionSize = 8;
-    for (int bus = 0; bus < busSize; bus++) {
-      for (int device = 0; device < deviceSize; device++) {
-        for (int function = 0; function < functionSize; function++) {
-          MAGIC.wIOs32(addressPort, buildAddress(bus, device, function, 0));
-          int reg0 = MAGIC.rIOs32(dataPort);
-          MAGIC.wIOs32(addressPort, buildAddress(bus, device, function, 1));
-          int reg1 = MAGIC.rIOs32(dataPort);
-          MAGIC.wIOs32(addressPort, buildAddress(bus, device, function, 2));
-          int reg2 = MAGIC.rIOs32(dataPort);
-          MAGIC.wIOs32(addressPort, buildAddress(bus, device, function, 3));
-          int reg3 = MAGIC.rIOs32(dataPort);
+    resetIterator();
+    while (next()) {
+      Console.print("Bus ");
+      Console.print(bus);
+      Console.print("; Device ");
+      Console.print(device);
+      Console.print("; Function ");
+      Console.print(function);
 
-          if (reg0 == 0 || reg0 == -1)
-            continue;
+      if (isMultiFunctionDevice())
+        Console.print("; Multifunction");
+      else
+        Console.print("; Singlefunction");
 
-          Console.print("Bus ");
-          Console.print(bus, SymbolColor.DEFAULT);
-          Console.print("; Device ");
-          Console.print(device, SymbolColor.DEFAULT);
-          Console.print("; Function ");
-          Console.print(function, SymbolColor.DEFAULT);
-          boolean isMultiFunctionDevice = (reg3 & 0x00800000) != 0;
+      Console.print('\n');
 
-          if (isMultiFunctionDevice) {
-            Console.print("; Multifunction");
-          }
-          else {
-            Console.print("; Singlefunction");
-            function = 8;
-          }
-          Console.print('\n');
-
-          printDevice(reg0, reg1, reg2, reg3);
-        }
-      }
+      printCurrentDevice();
     }
+  }
+
+  public static void enableBusMasterForCurrentDevice() {
+    enableBusMasterFor(bus, device, function);
   }
 
   public static void enableBusMasterFor(int bus, int device, int function) {
@@ -101,13 +140,31 @@ public class PCI {
 
     reg2 |= 0x4; // set bit 2 -> enable bus master in command
 
-    MAGIC.wIOs32(addressPort, address); // not sure if this is needed again, but better safe than sorry (some IO ports behave strange...)
+    // not sure if this is needed again, but better safe than sorry (some IO ports behave strange...)
+    MAGIC.wIOs32(addressPort, address);
+
     MAGIC.wIOs32(dataPort, reg2);
   }
 
-  private static void printDevice(int reg0, int reg1, int reg2, int reg3) {
-    int vendorId = reg0 & 0xFFFF;
-    int deviceId = (reg0 >>> 16) & 0xFFFF;
+  public static boolean isMultiFunctionDevice() { return (readReg(3) & 0x00800000) != 0; }
+
+  public static int getVendorId() { return getVendorId(readReg(0)); }
+  public static int getDeviceId() { return getDeviceId(readReg(0)); }
+  public static int getBaseClassCode() { return getBaseClassCode(readReg(2)); }
+  public static int getSubClassCode() { return getSubClassCode(readReg(2)); }
+  public static int getVendorId(int reg0) { return reg0 & 0xFFFF; }
+  public static int getDeviceId(int reg0) { return (reg0 >>> 16) & 0xFFFF; }
+  public static int getBaseClassCode(int reg2) { return (reg2 >>> 24) & 0xFF; }
+  public static int getSubClassCode(int reg2) { return (reg2 >>> 16) & 0xFF; }
+
+  private static void printCurrentDevice() {
+    int reg0 = readReg(0);
+    int reg1 = readReg(1);
+    int reg2 = readReg(2);
+    // int reg3 = readReg(3);
+
+    int vendorId = getVendorId(reg0);
+    int deviceId = getDeviceId(reg0);
 
     Console.print("VendorId: ");
     Console.printHex((short)vendorId, (byte)7);
@@ -117,8 +174,8 @@ public class PCI {
     Console.printHex((short)(reg1 & 0xFFFF), (byte)7);
     Console.print('\n');
 
-    int baseClassCode = (reg2 >>> 24) & 0xFF;
-    int subClassCode = (reg2 >>> 16) & 0xFF;
+    int baseClassCode = getBaseClassCode(reg2);
+    int subClassCode = getSubClassCode(reg2);
 
     Console.print("Baseclass: ");
     Console.print(BaseClassCode.convertToString(baseClassCode));
