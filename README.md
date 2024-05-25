@@ -5,8 +5,9 @@
 ### System Shortcuts
 
 - To shut down the system use `Ctrl`+`Shift`+`Alt`+`S`
-- To issue a breakpoint interrupt use `Ctrl`+`Alt`+`B`
+- To issue a breakpoint interrupt use `Ctrl`+`Alt`+`C`
   - The breakpoint interrupt triggers the bluescreen displaying a stacktrace and the register values
+- To stop a long-running task that is not returning use `Ctrl`+`Alt`+`K` to kill it.
 
 ## Build and Run
 

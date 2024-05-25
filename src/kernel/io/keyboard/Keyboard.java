@@ -104,12 +104,13 @@ public class Keyboard {
   }
 
   private static void keyUp(Key key) {
+    handleSpecialShortcutsUp(key);
     keyBuffer.appendEvent(key, KeyEvent.Up);
   }
 
   private static void keyDown(Key key) {
     if (key.code == keyCodeWaitingOn) waitingOnKeyPress = false;
-    handleSpecialShortcuts(key);
+    handleSpecialShortcutsDown(key);
 
     keyBuffer.appendEvent(key, KeyEvent.Down);
   }
@@ -142,8 +143,18 @@ public class Keyboard {
     return code & ~(1 << 7);
   }
 
-  private static void handleSpecialShortcuts(Key key) {
-    if (key.code == KeyCode.Q) {
+  private static int killShortcutCounter = 0;
+
+  private static void handleSpecialShortcutsUp(Key key) {
+    if (key.code == KeyCode.LCtrl || key.code == KeyCode.LAlt || key.code == KeyCode.K)
+      killShortcutCounter--;
+  }
+
+  private static void handleSpecialShortcutsDown(Key key) {
+    if (key.code == KeyCode.LCtrl || key.code == KeyCode.LAlt || key.code == KeyCode.K)
+      killShortcutCounter++;
+
+    if (killShortcutCounter == 3) {
       Kernel.killCurrentTask();
 
       // before we switch back to the scheduler loop we have to acknowledge
