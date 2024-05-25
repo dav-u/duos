@@ -34,6 +34,12 @@ public class Console {
     }
   }
 
+  public static void println(char c) { print(c); println(); }
+  public static void println(int i) { print(i); println(); }
+  public static void println(long l) { print(l); println(); }
+  public static void println(String str) { print(str); println(); }
+  public static void println() { print('\n'); }
+
   public static void print(String str, byte color) {
     for (int i = 0; i < str.length(); i++) {
       print(str.charAt(i), color);
