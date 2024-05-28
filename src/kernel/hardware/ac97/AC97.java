@@ -49,8 +49,8 @@ public class AC97 {
 
     // we need BAR 0 and BAR 1 which are both IO BARs
 
-    int namBase = PCI.readBar(0);
-    int nabmBase = PCI.readBar(1);
+    namBase = PCI.readBar(0);
+    nabmBase = PCI.readBar(1);
 
     Console.print("\nNAM Base: ");
     Console.printHex(namBase);
@@ -142,7 +142,7 @@ public class AC97 {
     for (int i = 0; i < SAMPLE_RATE; i++) {
       if (i % samplesPerWave == 0) highFrequency = !highFrequency;
 
-      samples[i] = highFrequency ? (short)0xFFFF : (short)0;
+      samples[i] = highFrequency ? (short)0xF000 : (short)0;
     }
   }
 
