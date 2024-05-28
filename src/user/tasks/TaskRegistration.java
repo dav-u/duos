@@ -29,6 +29,9 @@ public class TaskRegistration {
     UncooperativeTask uncooperativeTask = new UncooperativeTask();
     uncooperativeTask.priority = 5;
 
+    BreakpointTask breakpointTask = new BreakpointTask();
+    breakpointTask.priority = 5;
+
     scheduler.addTask(taskManagerTask);
 
     taskManagerTask.addTask(editorTask);
@@ -37,6 +40,7 @@ public class TaskRegistration {
     taskManagerTask.addTask(shittyPiano);
     taskManagerTask.addTask(writeToNull);
     taskManagerTask.addTask(uncooperativeTask);
+    taskManagerTask.addTask(breakpointTask);
 
     Console.print("Use the F-Keys to choose a task");
   }

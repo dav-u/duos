@@ -60,6 +60,29 @@ public class PCI {
     }
   }
 
+  public static void disableIoAndMemoryDecode() {
+    //Before attempting to read the information about the BAR, make sure to disable both I/O and memory decode in the command byte - OSDev
+    
+    int register = 1; // register with command in it
+    int address = buildAddress(bus, device, function, register);
+
+    MAGIC.wIOs32(addressPort, address);
+    int reg2 = MAGIC.rIOs32(dataPort);
+
+    reg2 &= ~(1<<1); // clear bit 1 -> disable memory space
+    reg2 &= ~(1<<0); // clear bit 0 -> disable IO space
+
+    // not sure if this is needed again, but better safe than sorry (some IO ports behave strange...)
+    MAGIC.wIOs32(addressPort, address);
+
+    MAGIC.wIOs32(dataPort, reg2);
+  }
+
+  public static void writeReg(int reg, int value) {
+    MAGIC.wIOs32(addressPort, buildAddress(bus, device, function, reg));
+    MAGIC.wIOs32(dataPort, value);
+  }
+
   public static int readReg(int reg) {
     MAGIC.wIOs32(addressPort, buildAddress(bus, device, function, reg));
     return MAGIC.rIOs32(dataPort);
@@ -138,7 +161,9 @@ public class PCI {
     MAGIC.wIOs32(addressPort, address);
     int reg2 = MAGIC.rIOs32(dataPort);
 
-    reg2 |= 0x4; // set bit 2 -> enable bus master in command
+    reg2 &= ~(1<<10); // disable bit 10 -> enables interrupts
+    reg2 |= 1 << 2; // set bit 2 -> enable bus master
+    reg2 |= 1 << 0; // set bit 0 -> enable IO space
 
     // not sure if this is needed again, but better safe than sorry (some IO ports behave strange...)
     MAGIC.wIOs32(addressPort, address);
@@ -152,10 +177,14 @@ public class PCI {
   public static int getDeviceId() { return getDeviceId(readReg(0)); }
   public static int getBaseClassCode() { return getBaseClassCode(readReg(2)); }
   public static int getSubClassCode() { return getSubClassCode(readReg(2)); }
+  public static int getHeaderType() { return getHeaderType(readReg(3)); }
+  public static int readBar(int barIndex) { return readReg(4 + barIndex) & 0xFFFFFFFC; }
+
   public static int getVendorId(int reg0) { return reg0 & 0xFFFF; }
   public static int getDeviceId(int reg0) { return (reg0 >>> 16) & 0xFFFF; }
   public static int getBaseClassCode(int reg2) { return (reg2 >>> 24) & 0xFF; }
   public static int getSubClassCode(int reg2) { return (reg2 >>> 16) & 0xFF; }
+  public static int getHeaderType(int reg3) { return reg3 >>> 16 & 0xF; }
 
   private static void printCurrentDevice() {
     int reg0 = readReg(0);

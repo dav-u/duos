@@ -63,6 +63,10 @@ public class TaskManagerTask extends Task {
           if (tasks[5] != null)
             scheduler.setActiveUiTask(tasks[5]);
           break;
+        case KeyCode.F7:
+          if (tasks[6] != null)
+            scheduler.setActiveUiTask(tasks[6]);
+          break;
 
         default: return true;
       }
