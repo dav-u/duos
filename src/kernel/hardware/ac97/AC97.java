@@ -120,9 +120,9 @@ public class AC97 {
       nabmBase + NabmRegisters.NABM_REGISTER_PCM_OUT + NabmRegisterBox.BUFFER_DESCRIPTOR_LIST_ADDRESS,
       bufferDescriptorListAddress);
 
-    MAGIC.wIOs32(
-      nabmBase + NabmRegisters.NABM_REGISTER_PCM_OUT + NabmRegisterBox.ENTRY_COUNT,
-      32);
+    MAGIC.wIOs8(
+      nabmBase + NabmRegisters.NABM_REGISTER_PCM_OUT + NabmRegisterBox.LAST_ENTRY_INDEX,
+      (byte)31);
 
     MAGIC.wIOs8(
       nabmBase + NabmRegisters.NABM_REGISTER_PCM_OUT + NabmRegisterBox.TRANSFER_CONTROL,
@@ -130,11 +130,33 @@ public class AC97 {
     
     Console.println();
 
+    while (true) {
+      byte index = MAGIC.rIOs8(
+        nabmBase + NabmRegisters.NABM_REGISTER_PCM_OUT + NabmRegisterBox.CURRENTLY_PROCESSED_ENTRY_INDEX
+      );
+
+      // -1 -> 31
+      byte lastIndex = (byte)((index - 1) & 0x1F);
+
+      MAGIC.wIOs8(
+        nabmBase + NabmRegisters.NABM_REGISTER_PCM_OUT + NabmRegisterBox.LAST_ENTRY_INDEX,
+        lastIndex
+      );
+
+      short sampleCount = MAGIC.rIOs16(
+        nabmBase + NabmRegisters.NABM_REGISTER_PCM_OUT + NabmRegisterBox.CURRENT_ENTRY_TRANSFERRED_SAMPLE_COUNT
+      );
+
+      Console.print((int)index);
+      Console.print("  ");
+      Console.println((int)sampleCount);
+    }
+
     return true;
   }
 
   private static void fillSamplesWithSquare(short[] samples) {
-    int freq = 880; //Hz
+    int freq = 440; //Hz
     int samplesPerWave = SAMPLE_RATE / freq;
     boolean highFrequency = false;
 
