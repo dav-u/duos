@@ -110,7 +110,6 @@ public class AC97 {
     while (true) {
       int val = MAGIC.rIOs8(nabmBase + NabmRegisters.NABM_REGISTER_PCM_OUT + NabmRegisterBox.TRANSFER_CONTROL);
       if ((val & 0x2) != 0x2) break;
-      Console.print('#');
     }
 
     MAGIC.wIOs8(
@@ -135,7 +134,7 @@ public class AC97 {
   }
 
   private static void fillSamplesWithSquare(short[] samples) {
-    int freq = 440; //Hz
+    int freq = 880; //Hz
     int samplesPerWave = SAMPLE_RATE / freq;
     boolean highFrequency = false;
 
@@ -148,7 +147,6 @@ public class AC97 {
 
   private static void powerCard() {
     MAGIC.wIOs32(nabmBase + NabmRegisters.GLOBAL_CONTROL_REGISTER, 0x2);
-    // MAGIC.wIOs32(nabmBase + NabmRegisters.GLOBAL_CONTROL_REGISTER, 0x3);
   }
 
   private static void resetRegisters() {
