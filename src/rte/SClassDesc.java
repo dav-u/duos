@@ -22,5 +22,7 @@ public class SClassDesc {
 
       methodBlock = methodBlock.nextMthd;
     }
+
+    return "";
   }
 }

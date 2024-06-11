@@ -1,6 +1,9 @@
 package math;
 
 public class Math {
+  public final static double PI = 3.1415;
+  public final static double TAU = 2*PI;
+
   public static int min(int a, int b) {
     return a <= b ? a : b;
   }

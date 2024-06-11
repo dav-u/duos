@@ -49,7 +49,7 @@ public class Scheduler {
 
   public void run() {
     handleKeyEvents();
-    // runTasks(); // TODO: let tasks run
+    runTasks(); // TODO: let tasks run
     displayUi();
   }
 

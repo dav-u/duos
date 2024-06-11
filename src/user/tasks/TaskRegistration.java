@@ -32,6 +32,9 @@ public class TaskRegistration {
     BreakpointTask breakpointTask = new BreakpointTask();
     breakpointTask.priority = 5;
 
+    Synthesizer synthesizer = new Synthesizer();
+    synthesizer.priority = 5;
+
     scheduler.addTask(taskManagerTask);
 
     taskManagerTask.addTask(editorTask);
@@ -41,6 +44,7 @@ public class TaskRegistration {
     taskManagerTask.addTask(writeToNull);
     taskManagerTask.addTask(uncooperativeTask);
     taskManagerTask.addTask(breakpointTask);
+    taskManagerTask.addTask(synthesizer);
 
     Console.print("Use the F-Keys to choose a task");
   }

@@ -99,6 +99,7 @@ public class Kernel {
 
     while (isRunning) {
       scheduler.run();
+      AC97.run(); // TODO: only do this if ac97 is enabled
       printTime();
     }
   }

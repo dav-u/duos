@@ -5,10 +5,27 @@ import kernel.hardware.PCI;
 import kernel.io.console.Console;
 
 public class AC97 {
-  private final static int SAMPLE_RATE = 48000;
+  public final static int SAMPLE_RATE = 48000;
+
+  // milliseconds for one buffer descriptor
+  private final static int MS_PER_BUFFER_DESC = 100;
+
+  // the lower the faster we can react to events
+  public final static int SAMPLES_PER_BUFFER_DESC = SAMPLE_RATE / 1000 * MS_PER_BUFFER_DESC;
+
+  private final static int BUFFER_DESC_COUNT = 32;
+
+  public final static int PCM_SCRATCH_SIZE = SAMPLES_PER_BUFFER_DESC * BUFFER_DESC_COUNT;
+
   private static int bus, device, function;
   private static boolean foundPciFunction = false;
   private static long[] bufferDescriptorListMemory;
+
+  public static short[] pcmScratch;
+
+  public static int sampleIndex;
+
+  private static int writeIndex = 0;
   
   /*
    * Native Audio Mixer Base and Native Audio Bus Master Base
@@ -33,22 +50,13 @@ public class AC97 {
       return false; // could not find AC97
     }
 
-    // Console.print("\nBus: ");
-    // Console.printHex(bus);
-    // Console.print("\nDevice: ");
-    // Console.printHex(device);
-    // Console.print("\nFunction: ");
-    // Console.printHex(function);
-
     // AC97 is still set in PCI
-
     PCI.enableBusMasterForCurrentDevice();
 
     int headerType = PCI.getHeaderType();
     if (headerType != 0x0) return false;
 
     // we need BAR 0 and BAR 1 which are both IO BARs
-
     namBase = PCI.readBar(0);
     nabmBase = PCI.readBar(1);
 
@@ -58,11 +66,6 @@ public class AC97 {
     Console.printHex(nabmBase);
 
     powerCard(); // TODO: also set other flags?
-
-    // int globalControl = MAGIC.rIOs32(nabmBase + NabmRegisters.GLOBAL_CONTROL_REGISTER);
-
-    // Console.print("\nGlobal control register: ");
-    // Console.printHex(globalControl);
 
     resetRegisters();
 
@@ -77,14 +80,12 @@ public class AC97 {
     
     // Pulse-code modulation (PCM)
     // use sample rate 48000
-
     // Load sound data in memory
-
     // 48000 samples per second
 
-    // 1 second of samples
-    short[] samples = new short[SAMPLE_RATE];
-    fillSamplesWithSquare(samples);
+    pcmScratch = new short[PCM_SCRATCH_SIZE];
+
+    // fillSamplesWithSquare(pcmScratch, SAMPLES_PER_BUFFER_DESC * BUFFER_DESC_COUNT);
 
     // has to be 4 byte aligned, but this is the case
     // with our memory management
@@ -97,8 +98,8 @@ public class AC97 {
     //bufferDescriptorList.descriptors[0].flags = (short)(1 << 14); // last entry of buffer
 
     for (int i = 0; i < 32; i++) {
-      bufferDescriptorList.descriptors[i].soundPtr = MAGIC.addr(samples[0]);
-      bufferDescriptorList.descriptors[i].sampleCount = (short)SAMPLE_RATE;
+      bufferDescriptorList.descriptors[i].soundPtr = MAGIC.addr(pcmScratch[i * SAMPLES_PER_BUFFER_DESC]);
+      bufferDescriptorList.descriptors[i].sampleCount = (short)SAMPLES_PER_BUFFER_DESC;
       bufferDescriptorList.descriptors[i].flags = 0;
     }
 
@@ -130,7 +131,17 @@ public class AC97 {
     
     Console.println();
 
-    while (true) {
+    return true;
+  }
+
+  @SJC.Inline
+  public static void writeSample(short sample) {
+    pcmScratch[writeIndex] = sample;
+    writeIndex++;
+    writeIndex %= PCM_SCRATCH_SIZE;
+  }
+
+  public static void run() {
       byte index = MAGIC.rIOs8(
         nabmBase + NabmRegisters.NABM_REGISTER_PCM_OUT + NabmRegisterBox.CURRENTLY_PROCESSED_ENTRY_INDEX
       );
@@ -147,20 +158,15 @@ public class AC97 {
         nabmBase + NabmRegisters.NABM_REGISTER_PCM_OUT + NabmRegisterBox.CURRENT_ENTRY_TRANSFERRED_SAMPLE_COUNT
       );
 
-      Console.print((int)index);
-      Console.print("  ");
-      Console.println((int)sampleCount);
-    }
-
-    return true;
+      AC97.sampleIndex = index * SAMPLES_PER_BUFFER_DESC + sampleCount;
   }
 
-  private static void fillSamplesWithSquare(short[] samples) {
+  public static void fillSamplesWithSquare(short[] samples, int count) {
     int freq = 440; //Hz
     int samplesPerWave = SAMPLE_RATE / freq;
     boolean highFrequency = false;
 
-    for (int i = 0; i < SAMPLE_RATE; i++) {
+    for (int i = 0; i < count; i++) {
       if (i % samplesPerWave == 0) highFrequency = !highFrequency;
 
       samples[i] = highFrequency ? (short)0xF000 : (short)0;
