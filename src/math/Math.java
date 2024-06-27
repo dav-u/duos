@@ -25,6 +25,11 @@ public class Math {
     return (float)(value < intValue ? intValue - 1 : intValue);
   }
 
+  public static float ceil(float value) {
+    int intValue = (int) value;
+    return (float)(value < intValue ? intValue + 1 : intValue);
+  }
+
   @SJC.Inline
   public static double sin(double nr) {
     if (nr < 0) {
