@@ -8,6 +8,10 @@ public class Oscillator {
   public final int sampleRate;
   public final double secondsPerSample;
 
+  /*
+   * Value between 0.0 and 1.0
+   */
+  public double volume = 1.0;
   public double phase;
 
   public Waveform waveform;
@@ -25,8 +29,8 @@ public class Oscillator {
   public void generate(int count, float frequency) {
     this.readIndex = this.nextWriteIndex;
     for (int i = 0; i < count; i++) {
-      ringBuffer[nextWriteIndex] = this.waveform.getAmpByPhase((float)this.phase);
-      this.phase += secondsPerSample*880; // TODO: frequency
+      ringBuffer[nextWriteIndex] = this.waveform.getAmpByPhase((float)this.phase) * (float)this.volume;
+      this.phase += secondsPerSample*frequency*2.0f; // * 2.0 because 2 channels
       if (this.phase >= Math.TAU) this.phase = 0;
       //Console.print((int)(this.phase * 10000));
 
@@ -41,5 +45,15 @@ public class Oscillator {
     this.readIndex %= RING_BUFFER_SIZE;
 
     return sample;
+  }
+
+  public void setVolume(double volume) {
+    if (volume < 0.0) this.volume = 0.0;
+    else if (volume > 1.0) this.volume = 1.0;
+    else this.volume = volume;
+  }
+
+  public double getVolume() {
+    return this.volume;
   }
 }

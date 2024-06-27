@@ -8,7 +8,7 @@ import kernel.scheduler.Scheduler;
 
 public class TaskRegistration {
   public static void registerUserTasks(Scheduler scheduler) {
-    TaskManagerTask taskManagerTask = new TaskManagerTask(scheduler, 10);
+    TaskManagerTask taskManagerTask = new TaskManagerTask(scheduler, 20);
     taskManagerTask.priority = 3;
 
     PrintPciTask printPciTask = new PrintPciTask();
@@ -35,6 +35,9 @@ public class TaskRegistration {
     Synthesizer synthesizer = new Synthesizer();
     synthesizer.priority = 5;
 
+    TestGraphics testGraphics = new TestGraphics();
+    testGraphics.priority = 5;
+
     scheduler.addTask(taskManagerTask);
 
     taskManagerTask.addTask(editorTask);
@@ -45,6 +48,7 @@ public class TaskRegistration {
     taskManagerTask.addTask(uncooperativeTask);
     taskManagerTask.addTask(breakpointTask);
     taskManagerTask.addTask(synthesizer);
+    taskManagerTask.addTask(testGraphics);
 
     Console.print("Use the F-Keys to choose a task");
   }

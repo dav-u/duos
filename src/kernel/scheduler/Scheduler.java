@@ -18,7 +18,7 @@ public class Scheduler {
   private int currentTaskIndex = -1;
 
   public Scheduler() {
-    tasks = new Task[10];
+    tasks = new Task[20];
     keyBufferReader = new KeyBufferReader(Keyboard.keyBuffer);
     activeUiTask = null;
   }

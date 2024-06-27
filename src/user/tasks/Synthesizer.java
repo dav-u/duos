@@ -5,6 +5,7 @@ import kernel.scheduler.TextUiTask;
 import user.lib.audio.Oscillator;
 import user.lib.audio.SquareWaveform;
 import user.lib.audio.SawtoothWaveform;
+import user.lib.audio.NullWaveform;
 import user.lib.audio.Waveform;
 import kernel.io.keyboard.KeyCode;
 import kernel.io.keyboard.KeyEvent;
@@ -13,14 +14,20 @@ import kernel.io.console.Console;
 public class Synthesizer extends TextUiTask {
   private boolean isPlaying = false;
   private Oscillator oscillator;
+  private Waveform activeWaveform;
+  private Waveform sawtoothWaveform;
+  private Waveform nullWaveform;
 
   private int previousSampleIndex = 0;
   private int writtenUpToSampleIndex = 0;
 
   public Synthesizer() {
-    Waveform wave = new SquareWaveform();
+    // Waveform wave = new SquareWaveform();
     // Waveform wave = new SawtoothWaveform();
-    this.oscillator = new Oscillator(wave, AC97.SAMPLE_RATE);
+    this.sawtoothWaveform = new SawtoothWaveform();
+    this.nullWaveform = new NullWaveform();
+    this.activeWaveform = this.nullWaveform;
+    this.oscillator = new Oscillator(this.nullWaveform, AC97.SAMPLE_RATE);
   }
 
   @Override
@@ -36,12 +43,13 @@ public class Synthesizer extends TextUiTask {
   @Override
   public boolean handleKeyEventInternal(KeyEvent event) {
     if (event.type == KeyEvent.Down && event.key.code == KeyCode.Enter) {
-      isPlaying = true;
-      // fillSamplesWithSquare(AC97.pcmScratch, AC97.sampleIndex, AC97.SAMPLES_PER_BUFFER_DESC);
+      // isPlaying = true;
+      this.oscillator.waveform = this.sawtoothWaveform;
     }
 
     if (event.type == KeyEvent.Up && event.key.code == KeyCode.Enter) {
-      isPlaying = false;
+      // isPlaying = false;
+      this.oscillator.waveform = this.nullWaveform;
     }
 
     return true;
@@ -59,12 +67,14 @@ public class Synthesizer extends TextUiTask {
     // float elapsedSeconds = elapsedSamples / (float)AC97.SAMPLE_RATE;
     // this.oscillator.update(elapsedSeconds);
 
+    // how much till the sound card catches up
     int indexDiff = this.writtenUpToSampleIndex - AC97.sampleIndex;
+    // if (indexDiff < 20000) Console.print("O");
     if (indexDiff < 0) indexDiff += AC97.sampleIndex;
 
-    int sampleCountToGenerate = 200; // TODO: make constant
+    int sampleCountToGenerate = 10; // TODO: make constant
 
-    if (isPlaying && indexDiff < 50) {
+    if (isPlaying && indexDiff < 20000) {
       this.oscillator.generate(sampleCountToGenerate, (float)440.0);
       for (int i = 0; i < sampleCountToGenerate; i++) {
         short sample = (short)(this.oscillator.readSample() * 30000); // TODO: 30000?
@@ -73,22 +83,13 @@ public class Synthesizer extends TextUiTask {
 
       this.writtenUpToSampleIndex = AC97.sampleIndex + sampleCountToGenerate % AC97.PCM_SCRATCH_SIZE;
     }
+    else {
+      //Console.print("We are fast enought!");
+    }
 
     this.previousSampleIndex = AC97.sampleIndex;
     this.writtenUpToSampleIndex = 10;
 
     return true;
-  }
-
-  public static void fillSamplesWithSquare(short[] samples, int startIndex, int count) {
-    int freq = 440; //Hz
-    int samplesPerWave = AC97.SAMPLE_RATE / freq;
-    boolean highFrequency = false;
-
-    for (int i = 0; i < count; i++) {
-      if (i % samplesPerWave == 0) highFrequency = !highFrequency;
-
-      samples[i + startIndex] = highFrequency ? (short)0xF000 : (short)0;
-    }
   }
 }
