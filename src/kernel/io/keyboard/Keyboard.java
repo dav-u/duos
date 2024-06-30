@@ -6,7 +6,7 @@ import kernel.io.console.Console;
 import kernel.io.console.SymbolColor;
 
 public class Keyboard {
-  public final static int keyCount = 94;
+  public final static int keyCount = 256;
 
   public static KeyBuffer keyBuffer;
 

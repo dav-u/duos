@@ -47,6 +47,11 @@ public class KeyMap {
     map.set(new Key(KeyCode.RAlt, "RAlt", '\0', '\0'));
     map.set(new Key(KeyCode.LCtrl, "LCtrl", '\0', '\0'));
     map.set(new Key(KeyCode.RCtrl, "RCtrl", '\0', '\0'));
+
+    map.set(new Key(KeyCode.Left, "Left", '\0', '\0'));
+    map.set(new Key(KeyCode.Right, "Right", '\0', '\0'));
+    map.set(new Key(KeyCode.Up, "Up", '\0', '\0'));
+    map.set(new Key(KeyCode.Down, "Down", '\0', '\0'));
     
     map.set(new Key(KeyCode.Q, "Q", 'q', 'Q'));
     map.set(new Key(KeyCode.W, "W", 'w', 'W'));

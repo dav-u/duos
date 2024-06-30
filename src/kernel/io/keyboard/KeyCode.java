@@ -56,11 +56,12 @@ public class KeyCode {
   public final static int KeypadTimes = 0x37;
   public final static int LAlt = 0x38;
   public final static int RAlt = 0xe038;
+  public final static int Insert = 0xe052;
+
   public final static int Up = 0xe048;
   public final static int Left = 0xe04b;
   public final static int Right = 0xe04d;
   public final static int Down = 0xe050;
-  public final static int Insert = 0xe052;
 
   public final static int Keypad_7_Home = 0x47;
   public final static int Keypad_8_UpArrow = 0x48;

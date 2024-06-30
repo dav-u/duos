@@ -15,6 +15,7 @@ public class GraphicSynthesizer extends GraphicsUiTask {
   private GraphicsBuffer buffer;
   private KeyboardDisplay keyboardDisplay;
   private WaveformDisplay waveformDisplay;
+  private WaveformSelector waveformSelector = new WaveformSelector();
 
   /* Sound */
   private final static int SAMPLES_TO_GENEREATE_PER_CYCLE = 980;
@@ -22,10 +23,6 @@ public class GraphicSynthesizer extends GraphicsUiTask {
   private final static int MAX_CONCURRENT_FREQUENCIES = 5;
 
   private Waveform activeWaveform;
-  private Waveform sawtoothWaveform = new SawtoothWaveform();
-  private Waveform squareWaveform = new SquareWaveform();
-  private Waveform sineWaveform = new SineWaveform();
-  private Waveform triangleWaveform = new TriangleWaveform();
   private Waveform nullWaveform = new NullWaveform();
 
   /* We have MAX_CONCURRENT_FREQUENCIES different tones we can play at the same time */
@@ -57,7 +54,7 @@ public class GraphicSynthesizer extends GraphicsUiTask {
       this.frequencyIndexToKeyCode[i] = -1;
     }
 
-    this.activeWaveform = this.squareWaveform;
+    this.activeWaveform = this.waveformSelector.getSelectedWaveform();
 
     this.buffer = new GraphicsBuffer(1920, 1080);
     this.keyboardDisplay = new KeyboardDisplay(800);
