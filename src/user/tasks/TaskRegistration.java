@@ -5,6 +5,7 @@ import kernel.io.console.ConsoleSwitchBuffer;
 import kernel.Kernel;
 import kernel.Test;
 import kernel.scheduler.Scheduler;
+import user.tasks.GraphicSynthesizer.GraphicSynthesizer;
 
 public class TaskRegistration {
   public static void registerUserTasks(Scheduler scheduler) {
@@ -35,8 +36,8 @@ public class TaskRegistration {
     Synthesizer synthesizer = new Synthesizer();
     synthesizer.priority = 5;
 
-    TestGraphics testGraphics = new TestGraphics();
-    testGraphics.priority = 5;
+    GraphicSynthesizer graphicSynthesizer = new GraphicSynthesizer();
+    graphicSynthesizer.priority = 5;
 
     scheduler.addTask(taskManagerTask);
 
@@ -48,7 +49,7 @@ public class TaskRegistration {
     taskManagerTask.addTask(uncooperativeTask);
     taskManagerTask.addTask(breakpointTask);
     taskManagerTask.addTask(synthesizer);
-    taskManagerTask.addTask(testGraphics);
+    taskManagerTask.addTask(graphicSynthesizer);
 
     Console.print("Use the F-Keys to choose a task");
   }

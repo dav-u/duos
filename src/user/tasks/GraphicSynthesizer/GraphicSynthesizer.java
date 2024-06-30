@@ -1,4 +1,4 @@
-package user.tasks;
+package user.tasks.GraphicSynthesizer;
 
 import kernel.io.GraphicsBuffer;
 import kernel.io.keyboard.KeyEvent;
@@ -10,9 +10,10 @@ import math.Math;
 import user.lib.audio.*;
 import kernel.hardware.ac97.AC97;
 
-public class TestGraphics extends GraphicsUiTask {
+public class GraphicSynthesizer extends GraphicsUiTask {
   /* Graphics */
-  private GraphicsBuffer buffer = new GraphicsBuffer(1920, 1080);
+  private GraphicsBuffer buffer;
+  private KeyboardDisplay keyboardDisplay;
 
   /* Sound */
   private final static int SAMPLES_TO_GENEREATE_PER_CYCLE = 980;
@@ -35,41 +36,27 @@ public class TestGraphics extends GraphicsUiTask {
   /* Logic */
   private int[] keyCodeToKeyIndex = new int[Keyboard.keyCount];
   private boolean[] pressedKeys = new boolean[17];
+  private boolean initialized = false;
 
-  public TestGraphics() {
+  public GraphicSynthesizer() {
+    this.buffer = new GraphicsBuffer(1920, 1080);
+    this.keyboardDisplay = new KeyboardDisplay(800);
+
     for (int i = 0; i < MAX_CONCURRENT_FREQUENCIES; i++) {
       this.frequencies[i] = 0.0f;
       this.oscillators[i] = new Oscillator(this.nullWaveform, AC97.SAMPLE_RATE);
-      this.oscillators[i].setVolume(0.3f);
+      this.oscillators[i].setVolume(0.2f);
     }
 
     for (int i = 0; i < Keyboard.keyCount; i++) {
       this.keyCodeToKeyIndex[i] = -1;
     }
 
+    KeyboardLayouts.setDefaultLayout(this.keyCodeToKeyIndex);
+
     for (int i = 0; i < MAX_CONCURRENT_FREQUENCIES; i++) {
       this.frequencyIndexToKeyCode[i] = -1;
     }
-
-    // map keyboard keys to half tone steps
-    this.keyCodeToKeyIndex[KeyCode.A] = 0; // A -> 0 (C)
-    this.keyCodeToKeyIndex[KeyCode.W] = 1;
-    this.keyCodeToKeyIndex[KeyCode.S] = 2;
-    this.keyCodeToKeyIndex[KeyCode.E] = 3;
-    this.keyCodeToKeyIndex[KeyCode.D] = 4;
-    this.keyCodeToKeyIndex[KeyCode.F] = 5;
-    this.keyCodeToKeyIndex[KeyCode.T] = 6;
-    this.keyCodeToKeyIndex[KeyCode.G] = 7;
-    this.keyCodeToKeyIndex[KeyCode.Z] = 8;
-    this.keyCodeToKeyIndex[KeyCode.H] = 9;
-    this.keyCodeToKeyIndex[KeyCode.U] = 10;
-    this.keyCodeToKeyIndex[KeyCode.J] = 11;
-    this.keyCodeToKeyIndex[KeyCode.K] = 12;
-    this.keyCodeToKeyIndex[KeyCode.O] = 13;
-    this.keyCodeToKeyIndex[KeyCode.L] = 14;
-    this.keyCodeToKeyIndex[KeyCode.P] = 15;
-    this.keyCodeToKeyIndex[KeyCode.O_Umlaut] = 16;
-    this.keyCodeToKeyIndex[KeyCode.A_Umlaut] = 17;
 
     this.sawtoothWaveform = new SawtoothWaveform();
     this.squareWaveform = new SquareWaveform();
@@ -119,8 +106,6 @@ public class TestGraphics extends GraphicsUiTask {
     return true;
   }
 
-  boolean initialized = false;
-
   @Override
   public boolean run() {
     if (!this.initialized) {
@@ -161,52 +146,8 @@ public class TestGraphics extends GraphicsUiTask {
 
   @Override
   public void display() {
-    int keyHeight = 200;
-    int whiteKeyWidth = 50;
-    int blackKeyWidth = whiteKeyWidth / 2;
-    int keyTop = buffer.height - keyHeight - 5;
-    int white = 0xFFFFFFFF;
-    int whiteDown = 0xFFAAAAFF;
-    int black = 0xFF000000;
-    int blackDown = 0xFF0000AA;
-    int gap = 2; // px
-
-    for (int k = 0; k < 11; k++) {
-      int offset = k*(whiteKeyWidth + gap);
-      if (isDisplayKeyPressed(k, true))
-        this.buffer.drawRect(offset, keyTop, whiteKeyWidth, keyHeight, whiteDown);
-      else this.buffer.drawRect(offset, keyTop, whiteKeyWidth, keyHeight, white);
-    }
-
-    for (int k = 0; k < 10; k++) {
-      if (k % 7 == 2 || k % 7 == 6) continue;
-      int offset = k*(whiteKeyWidth + gap);
-      if (isDisplayKeyPressed(k, false))
-        this.buffer.drawRect(offset + whiteKeyWidth - blackKeyWidth/2, keyTop, blackKeyWidth, keyHeight/3*2, blackDown);
-      else this.buffer.drawRect(offset + whiteKeyWidth - blackKeyWidth/2, keyTop, blackKeyWidth, keyHeight/3*2, black);
-    }
-
+    this.keyboardDisplay.drawTo(this.buffer, this.pressedKeys);
     this.buffer.renderTo(this.Graphics);
-  }
-
-  private int displayIndexToKeyIndex(int displayIndex, boolean isWhiteKey) {
-    int octave = displayIndex / 7;
-    displayIndex %= 7;
-
-    if (isWhiteKey) {
-      if (displayIndex <= 2) return 12 * octave + displayIndex * 2;
-      else return 12 * octave + displayIndex * 2 - 1;
-    }
-    else {
-      if (displayIndex <= 2) return 12 * octave + displayIndex * 2 + 1;
-      else return 12 * octave + displayIndex * 2;
-    }
-  }
-
-  private boolean isDisplayKeyPressed(int displayIndex, boolean isWhiteKey) {
-    int keyIndex = displayIndexToKeyIndex(displayIndex, isWhiteKey);
-
-    return this.pressedKeys[keyIndex];
   }
 
   private int nextFreeFrequencyIndex() {
