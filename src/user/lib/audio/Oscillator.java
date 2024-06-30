@@ -4,7 +4,7 @@ import math.Math;
 import kernel.io.console.Console;
 
 public class Oscillator {
-  public final static int RING_BUFFER_SIZE = 256;
+  public final static int RING_BUFFER_SIZE = 4094;
   public final int sampleRate;
   public final double secondsPerSample;
 

@@ -8,7 +8,7 @@ public class AC97 {
   public final static int SAMPLE_RATE = 48000;
 
   // milliseconds for one buffer descriptor
-  private final static int MS_PER_BUFFER_DESC = 100;
+  private final static int MS_PER_BUFFER_DESC = 30;
 
   // the lower the faster we can react to events
   public final static int SAMPLES_PER_BUFFER_DESC = SAMPLE_RATE / 1000 * MS_PER_BUFFER_DESC;
@@ -161,16 +161,10 @@ public class AC97 {
       AC97.sampleIndex = index * SAMPLES_PER_BUFFER_DESC + sampleCount;
   }
 
-  public static void fillSamplesWithSquare(short[] samples, int count) {
-    int freq = 440; //Hz
-    int samplesPerWave = SAMPLE_RATE / freq;
-    boolean highFrequency = false;
+  public static void setWriteIndex(int index) {
+    if (index < 0 || index >= PCM_SCRATCH_SIZE) index = 0;
 
-    for (int i = 0; i < count; i++) {
-      if (i % samplesPerWave == 0) highFrequency = !highFrequency;
-
-      samples[i] = highFrequency ? (short)0xF000 : (short)0;
-    }
+    AC97.writeIndex = index;
   }
 
   private static void powerCard() {

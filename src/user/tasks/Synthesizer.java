@@ -28,6 +28,7 @@ public class Synthesizer extends TextUiTask {
     this.nullWaveform = new NullWaveform();
     this.activeWaveform = this.nullWaveform;
     this.oscillator = new Oscillator(this.nullWaveform, AC97.SAMPLE_RATE);
+    this.oscillator.setVolume(0.3);
   }
 
   @Override
@@ -63,13 +64,8 @@ public class Synthesizer extends TextUiTask {
     if (AC97.sampleIndex < this.previousSampleIndex)
       this.previousSampleIndex -= AC97.PCM_SCRATCH_SIZE;
     
-    // elapsedSamples = AC97.sampleIndex - this.prthis.oscillator.readSample()eviousSampleIndex;
-    // float elapsedSeconds = elapsedSamples / (float)AC97.SAMPLE_RATE;
-    // this.oscillator.update(elapsedSeconds);
-
     // how much till the sound card catches up
     int indexDiff = this.writtenUpToSampleIndex - AC97.sampleIndex;
-    // if (indexDiff < 20000) Console.print("O");
     if (indexDiff < 0) indexDiff += AC97.sampleIndex;
 
     int sampleCountToGenerate = 10; // TODO: make constant
@@ -83,12 +79,7 @@ public class Synthesizer extends TextUiTask {
 
       this.writtenUpToSampleIndex = AC97.sampleIndex + sampleCountToGenerate % AC97.PCM_SCRATCH_SIZE;
     }
-    else {
-      //Console.print("We are fast enought!");
-    }
 
-    int diff = AC97.sampleIndex - this.previousSampleIndex;
-    // Console.print(diff);
     this.previousSampleIndex = AC97.sampleIndex;
     this.writtenUpToSampleIndex = 10;
 
