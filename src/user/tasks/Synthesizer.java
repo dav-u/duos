@@ -13,21 +13,18 @@ import kernel.io.console.Console;
 
 public class Synthesizer extends TextUiTask {
   private Oscillator oscillator;
-  private Waveform activeWaveform;
   private Waveform sawtoothWaveform;
+  private Waveform squareWaveform;
   private Waveform nullWaveform;
 
   private int previousSampleIndex = 0;
-  private int writtenUpToSampleIndex = 0;
 
-  private final static int SAMPLES_TO_GENEREATE_PER_CYCLE = 1000;
+  private final static int SAMPLES_TO_GENEREATE_PER_CYCLE = 980;
 
   public Synthesizer() {
-    // Waveform wave = new SquareWaveform();
-    // Waveform wave = new SawtoothWaveform();
     this.sawtoothWaveform = new SawtoothWaveform();
+    this.squareWaveform = new SquareWaveform();
     this.nullWaveform = new NullWaveform();
-    this.activeWaveform = this.nullWaveform;
     this.oscillator = new Oscillator(this.nullWaveform, AC97.SAMPLE_RATE);
     this.oscillator.setVolume(0.3);
   }
@@ -46,7 +43,7 @@ public class Synthesizer extends TextUiTask {
   public boolean handleKeyEventInternal(KeyEvent event) {
     if (event.type == KeyEvent.Down && event.key.code == KeyCode.Enter) {
       // isPlaying = true;
-      this.oscillator.waveform = this.sawtoothWaveform;
+      this.oscillator.waveform = this.squareWaveform;
     }
 
     if (event.type == KeyEvent.Up && event.key.code == KeyCode.Enter) {
@@ -61,6 +58,7 @@ public class Synthesizer extends TextUiTask {
 
   @Override
   public boolean run() {
+    return true;
     if (!this.initialized) {
       AC97.setWriteIndex(AC97.sampleIndex);
       this.previousSampleIndex = AC97.sampleIndex;

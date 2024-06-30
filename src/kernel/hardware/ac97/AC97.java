@@ -8,7 +8,7 @@ public class AC97 {
   public final static int SAMPLE_RATE = 48000;
 
   // milliseconds for one buffer descriptor
-  private final static int MS_PER_BUFFER_DESC = 8;
+  private final static int MS_PER_BUFFER_DESC = 4;
 
   // the lower the faster we can react to events
   public final static int SAMPLES_PER_BUFFER_DESC = SAMPLE_RATE / 1000 * MS_PER_BUFFER_DESC;
