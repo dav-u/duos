@@ -87,6 +87,8 @@ public class Synthesizer extends TextUiTask {
       //Console.print("We are fast enought!");
     }
 
+    int diff = AC97.sampleIndex - this.previousSampleIndex;
+    // Console.print(diff);
     this.previousSampleIndex = AC97.sampleIndex;
     this.writtenUpToSampleIndex = 10;
 

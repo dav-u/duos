@@ -32,6 +32,11 @@ public class TestGraphics extends GraphicsUiTask {
     this.keyCodeToKeyIndex[KeyCode.U] = 10;
     this.keyCodeToKeyIndex[KeyCode.J] = 11;
     this.keyCodeToKeyIndex[KeyCode.K] = 12;
+    this.keyCodeToKeyIndex[KeyCode.O] = 13;
+    this.keyCodeToKeyIndex[KeyCode.L] = 14;
+    this.keyCodeToKeyIndex[KeyCode.P] = 15;
+    this.keyCodeToKeyIndex[KeyCode.O_Umlaut] = 16;
+    this.keyCodeToKeyIndex[KeyCode.A_Umlaut] = 17;
   }
 
   @Override
@@ -73,14 +78,14 @@ public class TestGraphics extends GraphicsUiTask {
     int blackDown = 0xFF0000AA;
     int gap = 2; // px
 
-    for (int k = 0; k < 20; k++) {
+    for (int k = 0; k < 12; k++) {
       int offset = k*(whiteKeyWidth + gap);
       if (isDisplayKeyPressed(k, true))
         this.buffer.drawRect(offset, keyTop, whiteKeyWidth, keyHeight, whiteDown);
       else this.buffer.drawRect(offset, keyTop, whiteKeyWidth, keyHeight, white);
     }
 
-    for (int k = 0; k < 20; k++) {
+    for (int k = 0; k < 11; k++) {
       if (k % 7 == 2 || k % 7 == 6) continue;
       int offset = k*(whiteKeyWidth + gap);
       if (isDisplayKeyPressed(k, false))
