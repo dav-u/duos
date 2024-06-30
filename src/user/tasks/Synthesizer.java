@@ -12,7 +12,6 @@ import kernel.io.keyboard.KeyEvent;
 import kernel.io.console.Console;
 
 public class Synthesizer extends TextUiTask {
-  private boolean isPlaying = false;
   private Oscillator oscillator;
   private Waveform activeWaveform;
   private Waveform sawtoothWaveform;
@@ -20,6 +19,8 @@ public class Synthesizer extends TextUiTask {
 
   private int previousSampleIndex = 0;
   private int writtenUpToSampleIndex = 0;
+
+  private final static int SAMPLES_TO_GENEREATE_PER_CYCLE = 1000;
 
   public Synthesizer() {
     // Waveform wave = new SquareWaveform();
@@ -56,32 +57,32 @@ public class Synthesizer extends TextUiTask {
     return true;
   }
 
+  boolean initialized = false;
+
   @Override
   public boolean run() {
-    // just for testing
-    isPlaying = true;
+    if (!this.initialized) {
+      AC97.setWriteIndex(AC97.sampleIndex);
+      this.previousSampleIndex = AC97.sampleIndex;
+      this.initialized = true;
+    }
 
-    if (AC97.sampleIndex < this.previousSampleIndex)
-      this.previousSampleIndex -= AC97.PCM_SCRATCH_SIZE;
-    
-    // how much till the sound card catches up
-    int indexDiff = this.writtenUpToSampleIndex - AC97.sampleIndex;
-    if (indexDiff < 0) indexDiff += AC97.sampleIndex;
+    // previous = 200, index = 300 -> 100 samples have passed
+    // previous = 1000, index = 100 -> 300 (wrap around at 1200)
+    int diff = AC97.sampleIndex - this.previousSampleIndex;
+    if (diff < 0) diff = -diff;
 
-    int sampleCountToGenerate = 10; // TODO: make constant
+    int sampleCountToGenerate = SAMPLES_TO_GENEREATE_PER_CYCLE;
 
-    if (isPlaying && indexDiff < 20000) {
+    if (diff > SAMPLES_TO_GENEREATE_PER_CYCLE/2) {
       this.oscillator.generate(sampleCountToGenerate, (float)440.0);
       for (int i = 0; i < sampleCountToGenerate; i++) {
-        short sample = (short)(this.oscillator.readSample() * 30000); // TODO: 30000?
+        short sample = (short)(this.oscillator.readSample() * 32767);
         AC97.writeSample(sample);
       }
 
-      this.writtenUpToSampleIndex = AC97.sampleIndex + sampleCountToGenerate % AC97.PCM_SCRATCH_SIZE;
+      this.previousSampleIndex = AC97.sampleIndex;
     }
-
-    this.previousSampleIndex = AC97.sampleIndex;
-    this.writtenUpToSampleIndex = 10;
 
     return true;
   }

@@ -8,7 +8,7 @@ public class AC97 {
   public final static int SAMPLE_RATE = 48000;
 
   // milliseconds for one buffer descriptor
-  private final static int MS_PER_BUFFER_DESC = 30;
+  private final static int MS_PER_BUFFER_DESC = 8;
 
   // the lower the faster we can react to events
   public final static int SAMPLES_PER_BUFFER_DESC = SAMPLE_RATE / 1000 * MS_PER_BUFFER_DESC;
@@ -89,7 +89,7 @@ public class AC97 {
 
     // has to be 4 byte aligned, but this is the case
     // with our memory management
-    bufferDescriptorListMemory = new long[32];
+    bufferDescriptorListMemory = new long[BUFFER_DESC_COUNT];
 
     int bufferDescriptorListAddress = MAGIC.addr(bufferDescriptorListMemory[0]);
     BufferDescriptorList bufferDescriptorList = (BufferDescriptorList)MAGIC.cast2Struct(bufferDescriptorListAddress);
@@ -97,7 +97,7 @@ public class AC97 {
     //bufferDescriptorList.descriptors[0].sampleCount = (short)0xFFFE; // max
     //bufferDescriptorList.descriptors[0].flags = (short)(1 << 14); // last entry of buffer
 
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < BUFFER_DESC_COUNT; i++) {
       bufferDescriptorList.descriptors[i].soundPtr = MAGIC.addr(pcmScratch[i * SAMPLES_PER_BUFFER_DESC]);
       bufferDescriptorList.descriptors[i].sampleCount = (short)SAMPLES_PER_BUFFER_DESC;
       bufferDescriptorList.descriptors[i].flags = 0;
