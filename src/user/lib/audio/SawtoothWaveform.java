@@ -7,6 +7,6 @@ public class SawtoothWaveform extends Waveform {
     if (phase < Math.PI) {
       return (float)(phase / Math.PI);
     }
-    else return (float)(phase / Math.PI - 1.0);
+    else return (float)(phase / Math.PI - 2.0);
   }
 }

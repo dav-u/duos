@@ -14,17 +14,19 @@ public class GraphicSynthesizer extends GraphicsUiTask {
   /* Graphics */
   private GraphicsBuffer buffer;
   private KeyboardDisplay keyboardDisplay;
+  private WaveformDisplay waveformDisplay;
 
   /* Sound */
   private final static int SAMPLES_TO_GENEREATE_PER_CYCLE = 980;
   private final static float BASE_FREQUENCY = 261.63f; // middle C
   private final static int MAX_CONCURRENT_FREQUENCIES = 5;
 
-  private Waveform sawtoothWaveform;
-  private Waveform squareWaveform;
-  private Waveform sineWaveform;
-  private Waveform nullWaveform;
   private Waveform activeWaveform;
+  private Waveform sawtoothWaveform = new SawtoothWaveform();
+  private Waveform squareWaveform = new SquareWaveform();
+  private Waveform sineWaveform = new SineWaveform();
+  private Waveform triangleWaveform = new TriangleWaveform();
+  private Waveform nullWaveform = new NullWaveform();
 
   /* We have MAX_CONCURRENT_FREQUENCIES different tones we can play at the same time */
   private float[] frequencies = new float[MAX_CONCURRENT_FREQUENCIES];
@@ -39,9 +41,6 @@ public class GraphicSynthesizer extends GraphicsUiTask {
   private boolean initialized = false;
 
   public GraphicSynthesizer() {
-    this.buffer = new GraphicsBuffer(1920, 1080);
-    this.keyboardDisplay = new KeyboardDisplay(800);
-
     for (int i = 0; i < MAX_CONCURRENT_FREQUENCIES; i++) {
       this.frequencies[i] = 0.0f;
       this.oscillators[i] = new Oscillator(this.nullWaveform, AC97.SAMPLE_RATE);
@@ -58,11 +57,11 @@ public class GraphicSynthesizer extends GraphicsUiTask {
       this.frequencyIndexToKeyCode[i] = -1;
     }
 
-    this.sawtoothWaveform = new SawtoothWaveform();
-    this.squareWaveform = new SquareWaveform();
-    this.sineWaveform = new SineWaveform();
-    this.nullWaveform = new NullWaveform();
-    this.activeWaveform = this.sineWaveform;
+    this.activeWaveform = this.squareWaveform;
+
+    this.buffer = new GraphicsBuffer(1920, 1080);
+    this.keyboardDisplay = new KeyboardDisplay(800);
+    this.waveformDisplay = new WaveformDisplay(this.activeWaveform);
   }
 
   @Override
@@ -147,6 +146,7 @@ public class GraphicSynthesizer extends GraphicsUiTask {
   @Override
   public void display() {
     this.keyboardDisplay.drawTo(this.buffer, this.pressedKeys);
+    this.waveformDisplay.drawTo(buffer, 10, 10, 300, 200);
     this.buffer.renderTo(this.Graphics);
   }
 

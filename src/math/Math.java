@@ -4,6 +4,10 @@ public class Math {
   public final static double PI = 3.1415;
   public final static double TAU = 2*PI;
 
+  public static int abs(int a) {
+    return a < 0 ? -a : a;
+  }
+
   public static int min(int a, int b) {
     return a <= b ? a : b;
   }
@@ -32,11 +36,11 @@ public class Math {
 
   @SJC.Inline
   public static double sin(double nr) {
-    if (nr < 0) {
+    if (nr < 0.0) {
       return -Math.sin(-nr);
     }
-    if (nr > Math.PI) {
-      nr -= ((int)(nr / Math.PI)) * Math.PI;
+    if (nr > Math.TAU) {
+      nr -= ((int)(nr / Math.TAU)) * Math.TAU;
     }
     MAGIC.inline(0xDD, 0x45); MAGIC.inlineOffset(1, nr); //fld qword [ep+8]
     MAGIC.inline(0xD9, 0xFE);                            //fsin
